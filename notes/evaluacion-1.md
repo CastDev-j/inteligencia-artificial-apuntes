@@ -59,7 +59,7 @@ Cada Nº de respuesta aparece **una sola vez** en la columna Respuesta. Las celd
 2. Al escribir un predicado, una variable anomina puede aparecer varias veces  
    Verdadero(X) Falso( )  
 3. Representa en predicado la siguiente operación (√6) y de que aridad es  
-4. (∀(X) par(X) \(\Rightarrow\) Es divisible_por_dos(X).cual seria su representación en prolog  
+4. (∀(X) par(X) (->) Es divisible_por_dos(X).cual seria su representación en prolog  
 5. Menciona que tipo de operadores que son dinamicos en prolog  
 6. Para que sirve el evaluador is  
 7. Aparte del nombre de predicado,autores tambien lo definen como:  
