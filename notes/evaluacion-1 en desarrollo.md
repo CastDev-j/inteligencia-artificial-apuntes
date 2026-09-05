@@ -4,34 +4,74 @@
 
 ## Parte 1: Emparejamiento de conceptos (40 pts)
 
-| # | Concepto | Definición |
-|---|---|---|
-| 1713 | **Prueba de Turing** | Un humano interroga a un ordenador por teléfono; si no distingue si es humano o máquina, se supera la prueba |
-| 1106 | **Aristóteles** | Primero en codificar silogismos |
-| 1046 | **PLN** | Procesamiento de Lenguaje Natural — subcampo de la computación y el lenguaje humano |
-| 1555 | **Sintáctico** | A partir de unidades léxicas se genera estructura representativa (árbol o red) |
-| 1485 | **Conocimientos para ML** | Lingüística, Ciencia de la Computación, Estadística Bayesiana, Álgebra Lineal, Teoría de la Optimización |
-| 1380 | **Reconocimiento de patrones** | Ciencia que ocupa procesos de ingeniería, computación y matemáticas con objetos físicos o abstractos |
-| 1597 | **Espacio de estados** | Representación de un problema que abarca todas las situaciones posibles en la solución |
-| 1740 | **Estrategias de búsqueda** | Guiada por datos (forward), guiada por objetivos (backward), búsqueda ciega, primero en profundidad, primero en anchura |
-| 1512 | **Análisis sintáctico** | Utiliza estructura semántica para interpretación final de la oración según contexto |
-| 1704 | **Emulación** | Actuar como en la realidad sin importar los procesos internos |
-| 1792 | **Espacios de estados** | Definición formal |
-| 1520 | **Búsqueda heurística** | Difícil establecer el objetivo desde el principio |
-| 1464 | **Búsqueda exhaustiva** | Backtracking / fuerza bruta |
-| 1698 | **Aprender** | Adquirir conocimiento por estudio o experiencia |
-| 1848 | **Zadeh** | Introdujo el concepto de subconjunto borroso / lógica difusa |
-| 1619 | **Agente inteligente** | Entidad capaz de percibir y actuar, resuelve problemas con soluciones parciales a menudo intuidas |
-| 1842 | **Inteligencia Artificial** | Estudio de cómo lograr que computadoras hagan tareas que los humanos hacen mejor |
-| 1737 | **Robot / Agente autónomo** | Máquina programable capaz de percibir y actuar con autonomía |
-| 1648 | **Lógica difusa** | Conjuntos borrosos |
-| 1712 | *Sin identificar* | Posiblemente error tipográfico o nombre propio sin relevancia |
+Cada Nº de respuesta aparece **una sola vez** en la columna Respuesta. Las celdas vacías son opciones sin concepto asignado (distractores).
+
+| Nº de respuesta | Concepto (enunciado principal)                                                                                                  | Respuesta | Relación                                                                                                                                                                                                |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1713            | Un humano interroga a un ordenador por teléfono; si no distingue si es humano o máquina, se supera la prueba                    |           | Lectura y redaccion<br>Matematicas<br>Mecanica de fluidos<br>Programacion                                                                                                                               |
+| 1106            | Fue de los primeros en intentar codificar con silogismos                                                                        | 1464      | Algoritmos de busqueda profunda<br>Algoritmo ingenuo<br>Algoritmo de soluciones                                                                                                                         |
+| 1046            | Es un subcampo de la ciencia computacional y el lenguaje humano                                                                 |           | Descriptivos e inferenciales                                                                                                                                                                            |
+| 1555            | Se dice que a partir de las unidades léxicas se genera una estructura representativa (árbol, red, etc.)<br><br>                 | 1046      | PLN                                                                                                                                                                                                     |
+| 1485            | Son conocimientos que se deben de conocer para estudiar aprendizaje Automático                                                  | 1704      | Emulación                                                                                                                                                                                               |
+| 1380            | Es la ciencia que ocupa procesos de ingeniería, computación y matemáticas, relacionada con objetos físicos o abstractos.        | 1848      | Zadeh                                                                                                                                                                                                   |
+| 1597            | Es la representación de un problema que abarca todas las posibles situaciones que se pueden presentar en la solución del mismo. | 1740      | Dirección de búsqueda<br>Guada por datos (forward)<br>Guiada por objetivos (backward)<br>Orden de analisis de estados<br>Busqueda dciega o fuerza bruta<br>Primero en profundidad<br>Primero en anchura |
+| 1740            | Son estrategias de búsqueda                                                                                                     | 1713      | Prueba de turing                                                                                                                                                                                        |
+| 1512            | Es un proceso de análisis utiliza la estructura semántica para oobtener la interpretacion final de la oración según el contexto |           | Implicitos y explicitos                                                                                                                                                                                 |
+| 1704            | En algunos aspectos solo se requiere que se actue como en la realidad                                                           |           | Putin                                                                                                                                                                                                   |
+| 1792            | Son algunas búsquedas de soluciones                                                                                             |           | Prueba superada                                                                                                                                                                                         |
+| 1700            | Los espacios de estados se definen en                                                                                           | 1520      | Direccion<br>Busqueda inteligente<br>Fuerza debil<br>Primero en angostura                                                                                                                               |
+| 1520            | Es dificil establecer el objetivo desde el principio                                                                            | 1737      | inteligencia artificial                                                                                                                                                                                 |
+| 1464            | Realiza una búsqueda exhaustiva y sistemática en el espacio de soluciones del problema                                          | 1700      | Espacios internos                                                                                                                                                                                       |
+| 1698            | Adquirir conocimiento de una cosa por medio del estudio o la experiencia                                                        | 1380      | Reconocimiento de patrones                                                                                                                                                                              |
+| 1848            | El concepto de subconjunto borroso fue introducido por ...                                                                      | 1512      | Contextual                                                                                                                                                                                              |
+| 1619            | Un agente inteligente, es una entidad capaz de ...                                                                              |           | forward                                                                                                                                                                                                 |
+| 1842            | Trata de la resolución de problemas aplicando soluciones parciales, a menudo inútiles                                           | 1106      | Aristoteles                                                                                                                                                                                             |
+| 1737            | Es el estudio de cómo lograr que las computadoras realicen tareas que, por el momento, los hombres hacen mejor...               | 1555      | Sintactico                                                                                                                                                                                              |
+| 1624            | Es una máquina programable capaz de percibir y actuar en el mundo con cierta autonomía                                          | 1485      | Lingüística<br>Ciencia de la computación<br>Estadística bayesiana<br>Algebra Lineal<br>Teoría de la optimización                                                                                        |
+|                 |                                                                                                                                 |           | PLN                                                                                                                                                                                                     |
+|                 |                                                                                                                                 | 1597      | Espacio de estados                                                                                                                                                                                      |
+|                 |                                                                                                                                 |           | Reconocimiento de pixeles                                                                                                                                                                               |
+|                 |                                                                                                                                 |           | Busqueda única                                                                                                                                                                                          |
+|                 |                                                                                                                                 |           | Noroña                                                                                                                                                                                                  |
+|                 |                                                                                                                                 | 1792      | foward<br>backward<br>Algoritmo Backtracking<br>profundidad y anchura                                                                                                                                   |
+|                 |                                                                                                                                 |           | Simulación                                                                                                                                                                                              |
+|                 |                                                                                                                                 |           | Sintaxis                                                                                                                                                                                                |
+|                 |                                                                                                                                 |           | Backtraining                                                                                                                                                                                            |
+|                 |                                                                                                                                 |           | puede indicar valores intermedios<br>(0,0,1,....0,2,.....0,9)                                                                                                                                           |
+|                 |                                                                                                                                 |           | Sistema complejo                                                                                                                                                                                        |
+|                 |                                                                                                                                 | 1842      | La heurestica                                                                                                                                                                                           |
+|                 |                                                                                                                                 |           | Logica clásica                                                                                                                                                                                          |
+|                 |                                                                                                                                 |           | Pueden indicar valores enteros                                                                                                                                                                          |
+|                 |                                                                                                                                 |           | leer la mente                                                                                                                                                                                           |
+|                 |                                                                                                                                 |           | adivinar el futuro                                                                                                                                                                                      |
+|                 |                                                                                                                                 | 1624      | Robot                                                                                                                                                                                                   |
+|                 |                                                                                                                                 | 1698      | Aprender                                                                                                                                                                                                |
+|                 |                                                                                                                                 |           | Razonar                                                                                                                                                                                                 |
+|                 |                                                                                                                                 | 1619      | Percibir su entorno                                                                                                                                                                                     |
 
 ---
 
 ## Parte 2: Respuestas completas
 
-### 1. Predicados monádicos y poliádicos
+### Preguntas
+
+1. Crea al menos 3 predicados de cada uno monaicos y poliadicos  
+2. Al escribir un predicado, una variable anomina puede aparecer varias veces  
+   Verdadero(X) Falso( )  
+3. Representa en predicado la siguiente operación (√6) y de que aridad es  
+4. (∀(X) par(X) \(\Rightarrow\) Es divisible_por_dos(X).cual seria su representación en prolog  
+5. Menciona que tipo de operadores que son dinamicos en prolog  
+6. Para que sirve el evaluador is  
+7. Aparte del nombre de predicado,autores tambien lo definen como:  
+8. Por que no se declaran las variables en prolog  
+9. Programación logica, tambien esta compuesto por los paradigmas de programación de:  
+10. Una clausula esta compuesta por:
+
+---
+
+### Respuestas
+
+#### 1. Predicados monádicos y poliádicos
 
 **Monádicos** (aridad 1):
 
@@ -41,101 +81,50 @@ es_hombre(juan).
 es_estudiante(carlos).
 ```
 
-**Poliádicos** (aridad 2 o más):
+**Poliádicos** (aridad ≥ 2):
 
 ```prolog
-padre(juan, ana).          % aridad 2
-gusta(maria, chocolate).   % aridad 2
-envia(juan, carta, ana).   % aridad 3
+padre(juan, ana).
+gusta(maria, chocolate).
+envia(juan, carta, ana).
 ```
 
----
+#### 2. Variable anónima repetida
 
-### 2. Variables anónimas
+**Falso.** Cada `_` es independiente; para la misma variable usa un nombre (ej. `X`).
 
-> Al escribir un predicado, una variable anónima puede aparecer varias veces
+#### 3. Representación de (√6) y su aridad
 
-**Falso.** Cada `_` es independiente. Si se necesita que sea la misma variable, se debe usar un nombre concreto (ej. `X`).
+`sqrt(6)` — functor `sqrt/1`, aridad **1**.
 
----
-
-### 3. Representación en Prolog de ∀x
+#### 4. Representación en Prolog de (∀X par(X) ⇒ es_divisible_por_dos(X))
 
 ```prolog
 es_divisible_por_dos(X) :- par(X).
 ```
 
-> **Nota:** La aridad de `es_divisible_por_dos/1` es 1. El cuantificador universal `∀` se omite en Prolog porque todas las variables en la cabeza de una regla se consideran universalmente cuantificadas.
+Aridad **1**; el `∀` se omite (variables de la cabeza son universales).
 
----
+#### 5. Operadores dinámicos en Prolog
 
-### 4. Operadores dinámicos en Prolog
+`:- dynamic predicado/aridad`; modificables con `assert/1`, `retract/1`, `abolish/1`.
 
-Son aquellos declarados con `:- dynamic predicado/aridad`. Permiten modificar la base de conocimientos en tiempo de ejecucción con `assert/1`, `retract/1` y `abolish/1`.
+#### 6. ¿Para qué sirve el evaluador (`is`)?
 
-```prolog
-:- dynamic mi_hecho/2.
-```
+Evalúa expresiones aritméticas y unifica el resultado con una variable.
 
----
+#### 7. Otra definición de predicado
 
-### 5. ¿Para qué sirve el evaluador?
+Relación o estructura relacional; también como **hecho**, **regla** o **cláusula** según su forma.
 
-El evaluador (motor de inferencia) sirve para sintetizar un valor o determinar si una consulta es verdadera, mediante:
+#### 8. ¿Por qué no se declaran las variables en Prolog?
 
-- **Unificación**
-- **Backtracking**
-- **Aplicación de reglas y hechos**
+Porque se instancian automáticamente por **unificación**; no hay tipos declarados.
 
-En Prolog, es el núcleo que resuelve objetivos.
+#### 9. Paradigmas de la programación lógica
 
----
+Declarativa y basada en reglas (apoyada en lógica de predicados).
 
-### 6. Otra definición de predicado
+#### 10. Estructura de una cláusula
 
-También se define como **relación** o **estructura relacional**, porque establece una relación entre sus argumentos (no es una función que devuelve un valor).
-
----
-
-### 7. ¿Por qué no se declaran las variables en Prolog?
-
-Porque las variables se instancian automáticamente mediante **unificación** durante la ejecución. No hay tipos declarados; una variable puede tomar cualquier valor que encaje con la consulta.
-
----
-
-### 8. Paradigmas de la programación lógica
-
-- **Declarativo** — se describe qué se quiere, no cómo
-- **Basado en reglas** — hechos + reglas de inferencia
-- **Lógico-matemático** — basado en lógica de predicados de primer orden
-
----
-
-### 9. Estructura de una cláusula
-
-Una cláusula está compuesta por **cabeza** (conclusión) y **cuerpo** (premisas), separados por `:-`.
-
-| Tipo | Estructura | Ejemplo |
-|---|---|---|
-| **Hecho** | Solo cabeza | `padre(juan, ana).` |
-| **Regla** | `cabeza :- cuerpo` | `abuelo(X,Z) :- padre(X,Y), padre(Y,Z).` |
-
----
-
-### 10. Representación en Prolog de una expresión
-
-Dada: `mujer(hormiga) → hombre(mutín), hombre(frigo) → pareja(hormiga,mutín), conductor, padre(Javier, ericita)`
-
-```prolog
-mujer(hormiga).
-hombre(mutín).
-hombre(frigo).
-pareja(hormiga, mutín).
-conductor.
-padre(javier, ericita).
-
-t :- mujer(hormiga), hombre(mutín), hombre(frigo),
-      pareja(hormiga, mutín), conductor, padre(javier, ericita).
-```
-
-> La flecha `→` se interpreta como implicación (`:-` en Prolog`). `t` sería la meta que se cumple si todos los hechos y reglas son verdaderos.
+**Cabeza** (conclusión) y **cuerpo** (premisas), separados por `:-`.
