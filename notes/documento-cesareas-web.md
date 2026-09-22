@@ -1,6 +1,6 @@
 # Sistema Experto para la Decisión del Tipo de Cesárea — Interfaz Web
 
-> Práctica: sistema experto con **encadenamiento hacia atrás** en Prolog, ahora expuesto a través de una **interfaz web** (servidor HTTP + HTML generado por el propio Prolog, sin JavaScript). El motor de inferencia es el mismo de `cesareas.pl`; esta versión (`cesareas_web.pl`) sustituye la consola por un formulario y una página de resultados con iconografía.
+Práctica: sistema experto con **encadenamiento hacia atrás** en Prolog, ahora expuesto a través de una **interfaz grafica** (servidor HTTP + HTML generado con Prolog). El motor de inferencia es el mismo de `cesareas.pl`; esta versión (`cesareas_web.pl`) sustituye la consola por un formulario y una página de resultados con iconografía.
 
 ## 1. Objetivo de la práctica
 
