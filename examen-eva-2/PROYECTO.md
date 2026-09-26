@@ -214,7 +214,7 @@ Age,SystolicBP,DiastolicBP,BS,BodyTemp,HeartRate,RiskLevel
 
 ---
 
-## 5. Información complementaria y fuentes citadas
+## 5. Información complementaria
 
 ### 5.1 Por qué importan estas constantes vitales
 
