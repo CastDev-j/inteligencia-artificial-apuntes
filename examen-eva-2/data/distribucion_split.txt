@@ -1,0 +1,55 @@
+VERIFICACION DEL PARTICIONADO 70/30 (estratificado por RiskLevel)
+==============================================================
+Dataset original  : Maternal Health Risk Data Set.csv
+Instancias totales: 1014  (la ficha de UCI declara 1013; el CSV real trae 1014)
+Train (70%)       : 709  -> data/maternal_health_risk_train.dat / .arff
+Test  (30%)       : 305  -> data/maternal_health_risk_test.dat / .arff
+random_state      : 42
+
+ORIGINAL      Instancias         %
+----------------------------------
+low risk             406    40.04%
+mid risk             336    33.14%
+high risk            272    26.82%
+----------------------------------
+TOTAL               1014   100.00%
+
+TRAIN 70%     Instancias         %
+----------------------------------
+low risk             284    40.06%
+mid risk             235    33.15%
+high risk            190    26.80%
+----------------------------------
+TOTAL                709   100.00%
+
+TEST 30%      Instancias         %
+----------------------------------
+low risk             122    40.00%
+mid risk             101    33.11%
+high risk             82    26.89%
+----------------------------------
+TOTAL                305   100.00%
+
+COMPARATIVO DE DISTRIBUCION DE CLASES
+--------------------------------------------------------------
+           Original (1014)  Train (70%)  % train  Test (30%)  % test  Desviacion %
+RiskLevel                                                                         
+low risk               406          284    40.06         122   40.00          0.04
+mid risk               336          235    33.15         101   33.11          0.02
+high risk              272          190    26.80          82   26.89          0.06
+
+[OK] Desviacion maxima por clase entre original y test: 0.06 p.p. (umbral < 1.00 p.p.)
+[*] Filas duplicadas en el dataset original: 562 (se conservan: son repeticiones reales registradas por el sensor IoT).
+[*] Registros idénticos (mismos 6 features y misma clase) presentes a la vez en train y test: 166
+[*] Registros con HeartRate fuera de 50-110 bpm: 2 (HeartRate = [7]; se conservan sin modificar para no alterar la fuente, ver seccion 6.4 del README).
+
+ESTADISTICAS DESCRIPTIVAS POR CONJUNTO
+--------------------------------------------------------------
+            TRAIN (70%)                                                 TEST (30%)                                                 
+                  count    mean    std   min   25%    50%    75%    max      count    mean    std   min    25%    50%    75%    max
+Age               709.0   29.88  13.49  10.0  19.0   27.0   40.0   70.0      305.0   29.86  13.46  12.0   19.0   25.0   37.0   66.0
+SystolicBP        709.0  113.23  18.71  70.0  95.0  120.0  120.0  160.0      305.0  113.13  17.71  70.0  100.0  120.0  120.0  160.0
+DiastolicBP       709.0   76.47  13.88  49.0  65.0   80.0   90.0  100.0      305.0   76.45  13.92  49.0   65.0   80.0   90.0  100.0
+BS                709.0    8.74   3.31   6.0   6.9    7.5    8.0   19.0      305.0    8.69   3.26   6.0    6.9    7.5    8.0   19.0
+BodyTemp          709.0   98.70   1.40  98.0  98.0   98.0   98.0  103.0      305.0   98.58   1.29  98.0   98.0   98.0   98.0  103.0
+HeartRate         709.0   74.55   8.40   7.0  70.0   76.0   80.0   90.0      305.0   73.71   7.29  60.0   70.0   76.0   78.0   90.0
