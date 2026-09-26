@@ -100,8 +100,7 @@ flowchart LR
 
 ### 2.3 Alcance del experimento
 
-Se entrenan y comparan **cuatro modelos de clasificación** de la librería de Weka
-(los mismos cuatro del ejercicio base de Iris), sobre el mismo dataset y con la misma
+Se entrenan y comparan **cuatro modelos de clasificación** de la librería de Weka, sobre el mismo dataset y con la misma
 partición, de modo que las diferencias en rendimiento sean atribuibles únicamente al
 algoritmo.
 
@@ -111,9 +110,6 @@ algoritmo.
 | 2 | **SVM** | Margen máximo | Funciona bien con atributos numéricos y pocas muestras; modela fronteras de decisión no lineales. En Weka se implementa en la clase `SMO`. |
 | 3 | **MultilayerPerceptron** (MLP) | Red neuronal | Aprende interacciones no lineales entre constantes vitales. |
 | 4 | **NaiveBayes** | Probabilístico | Hipótesis de independencia; línea base clásica y muy rápida. |
-
-> **Nota:** en la interfaz de Weka la SVM corresponde a la clase `SMO`
-> (`Classifiers → Functions → SMO`); en el resto del documento se le denominó **SVM**.
 
 ---
 
