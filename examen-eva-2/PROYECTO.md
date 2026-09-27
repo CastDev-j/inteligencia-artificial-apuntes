@@ -686,17 +686,13 @@ pacientes nuevas reales. Este matiz se desarrolla en la sección 9.5.
 
 ### 9.1 Criterios de comparación
 
-Para elegir el clasificador final se consideraron cuatro criterios, en este orden de prioridad
-clínica:
+Cuatro criterios, por orden de prioridad clínica:
 
-1. **Kappa statistic (`1kappa`):** corrige el desempeño por azar, a diferencia del accuracy; un
-   valor cercano a 1 indica que el modelo discrimina realmente las tres clases.
-2. **%error en el conjunto de prueba:** la capacidad de funcionar con pacientes nuevos es el
-   requisito real de un modelo aplicable en consulta.
-3. **Exhaustividad (recall) de `high risk`:** en salud pública es preferible clasificar de más a
-   una paciente de riesgo alto que dejar pasar un caso grave.
-4. **Tiempo de entrenamiento y complejidad:** un modelo que tarda 0.02 s es utilizable en la
-   práctica; uno que tarda minutos, no.
+1. **Kappa statistic:** corrige el desempeño por azar; cerca de 1 = discrimina las tres clases.
+2. **%error en prueba:** funcionar con pacientes nuevas es el requisito real.
+3. **Exhaustividad de `high risk`:** preferible clasificar de más a un riesgo alto que dejar pasar
+   un caso grave.
+4. **Tiempo de entrenamiento:** 0.02 s es utilizable en consulta; minutos, no.
 
 ### 9.2 Modelo elegido: `IBk` (k = 1)
 
@@ -709,12 +705,10 @@ Aplicando los cuatro criterios al conjunto de validación (305 instancias):
 | 3. **Exhaustividad `high`** | **0.890** | 0.768 | 0.646 | 0.646 |
 | 4. **Tiempo de construcción** | **0 s** | 0.28 s | 0.02 s | 0 s |
 
-Gana en los cuatro criterios a la vez y por margen amplio (20 p.p. de kappa sobre el segundo lugar),
-así que la decisión no depende de qué criterio se privilegie. k = 1 basta porque un vecino
-individual ya localiza bien a la paciente: la matriz de confusión (sección 8.3) muestra solo 6
-errores de 82 hacia `high risk`. Su AUC de 0.903, el mejor de los cuatro, indica además que
-**ordena** bien a las pacientes por riesgo aunque el corte de decisión no sea óptimo, que es
-justo lo que importa en un sistema de alerta temprana.
+Gana en los cuatro criterios a la vez, así que la decisión no depende de cuál se privilegie. Su
+AUC de 0.903, el mejor de los cuatro, indica que **ordena** bien a las pacientes por riesgo aunque
+el corte no sea óptimo, que es lo que importa en una alerta temprana. Y k = 1 basta: en 8.3 solo 6
+de los 82 casos `high` se clasificaron mal.
 
 ### 9.3 Brecha train/test: subajuste, no sobreajuste
 
@@ -725,70 +719,58 @@ justo lo que importa en un sistema de alerta temprana.
 | `SMO` (SVM) | 64.32 % | 62.62 % | 1.69 p.p. | **Subajuste** |
 | `NaiveBayes` | 60.93 % | 59.34 % | 1.59 p.p. | **Subajuste** |
 
-La lectura es contraintuitiva: **la mayor brecha corresponde al mejor modelo**. Una brecha pequeña
-no indica buena generalización, sino que el modelo apenas diferencia un conjunto del otro porque
-**no aprovecha ninguno**. Los tres modelos con brecha mínima son también los que peor rinden en sus
-propios datos de entrenamiento, lo que apunta a falta de capacidad y no a varianza. La causa
-probable es que se ejecutaron sin ajustar hiperparámetros: el `SMO` con **kernel lineal** y la red
-con solo 4 neuronas ocultas no pueden trazar fronteras curvas en un espacio de 6 dimensiones.
-
-Conviene no sobreinterpretar las diferencias: 305 instancias equivalen a 0.33 p.p. por instancia,
-así que la distancia entre primero y segundo (15 p.p.) es sólida, pero las de 1–2 p.p. entre los
-tres modelos inferiores caen dentro del ruido muestral.
+La lectura es contraintuitiva: **la mayor brecha es del mejor modelo**. Una brecha pequeña no
+indica buena generalización, sino que el modelo no aprovecha ninguno de los dos conjuntos: los tres
+con brecha mínima son también los que peor rinden en su propio entrenamiento, lo que apunta a
+falta de capacidad y no a varianza. La causa probable es la falta de ajuste de hiperparámetros:
+el `SMO` con **kernel lineal** y la red con 4 neuronas ocultas no pueden trazar fronteras curvas en
+un espacio de 6 dimensiones. Las diferencias de 1–2 p.p. entre esos tres modelos caen dentro del
+ruido muestral (0.33 p.p. por instancia).
 
 ### 9.4 El problema de la clase `mid`
 
-| Modelo | Exhaustividad `mid` | De las 101 pacientes `mid` del test, cuántas se clasificaron como `low` |
-|--------|---------------------|-----------------------------------------------|
-| `IBk` (k=1) | 0.782 | 20 (19.8 %) |
-| `MultilayerPerceptron` | 0.406 | 55 (54.5 %) |
-| `SMO` (SVM) | 0.267 | 68 (67.3 %) |
-| `NaiveBayes` | 0.139 | 81 (80.2 %) |
-
 Es el hallazgo de mayor implicancia clínica, y el riesgo apunta en la dirección peligrosa: degradar
 `mid` a `low` **subdiagnostica de forma silenciosa** al grupo que más se beneficia del seguimiento
-rutinario, porque la paciente no muestra síntomas. Con `NaiveBayes`, 4 de cada 5 pacientes de
-riesgo medio pasarían inadvertidas.
+rutinario, porque la paciente no muestra síntomas. Ocurre en 81 de las 101 pacientes `mid` del test
+con `NaiveBayes` (80.2 %), en 68 con `SMO` y en solo 20 con `IBk` (exhaustividad `mid` de la tabla
+en 8.4).
 
-La causa está en los datos, no en los modelos. El análisis de `NaiveBayes` (sección 8) muestra que
-la glucemia media es 7.3 / 7.9 / 12.0 para `low` / `mid` / `high` —separación excelente entre `low`
-y `high`— pero `low` y `mid` se solapan casi por completo (7.3 ± 0.7 frente a 7.9 ± 2.4, mismo
-rango 6–9). La presión sistólica media también difiere poco (105 frente a 114, con desviaciones de
-16 y 15). **`low` y `mid` son la misma región del dataset**, y por eso 38 de los 53 errores de `IBk`
-caen exactamente en esa frontera. Cualquier modelo construido solo con estas seis constantes tiene
-un techo de desempeño en `mid`; separarla exigiría información clínica adicional (9.6, punto 2).
+La causa está en los datos, no en los modelos. La glucemia media es 7.3 / 7.9 / 12.0 para `low` /
+`mid` / `high` —separación excelente entre `low` y `high`— pero `low` y `mid` se solapan casi por
+completo (7.3 ± 0.7 frente a 7.9 ± 2.4, mismo rango 6–9) y la presión sistólica apenas difiere
+(105 frente a 114). **`low` y `mid` son la misma región del dataset**: por eso 38 de los 53 errores
+de `IBk` caen en esa frontera, y ningún modelo construido solo con estas seis constantes puede
+superarla (ver 9.6, punto 2).
 
 ### 9.5 Limitaciones del estudio
 
-- **Muestra reducida** (1014 registros) y de un solo país (Bangladesh): no se generaliza a otras
-  poblaciones sin reentrenamiento.
+- **Muestra reducida** (1014 registros) y de un solo país: no se generaliza a otras poblaciones sin
+  reentrenamiento.
 - **Solapamiento train/test:** 219 de las 305 instancias de validación (71.8 %) replican un patrón
-  de valores presente en el entrenamiento. Los accuracies de 8.2 **no estiman el desempeño con
+  presente en el entrenamiento, así que los accuracies de 8.2 **no estiman el desempeño con
   pacientes nuevas**.
-- **Etiquetas intrínsecamente ambiguas:** 27 grupos de registros con los 6 valores idénticos tienen
-  etiquetas de riesgo distintas (151 instancias). Hay filas indistinguibles con etiqueta
-  contradictoria, lo que fija un **error de Bayes no nulo**: ningún modelo puede superar el 100 %
-  de accuracy en este conjunto.
-- **Clases solapadas:** un desempeño mediocre en `low` y `mid` es un resultado esperable y
+- **Etiquetas ambiguas:** 27 grupos con los 6 valores idénticos tienen etiquetas de riesgo distintas
+  (151 instancias). Hay filas indistinguibles, lo que fija un **error de Bayes no nulo**: nadie
+  puede llegar al 100 % de accuracy en este conjunto.
+- **Clases solapadas:** el desempeño mediocre en `low` y `mid` es un resultado esperable y
   científicamente honesto, no un error del experimento.
 - **Sin validación clínica:** las etiquetas provienen del criterio clínico de las mediciones
   registradas, no de un estudio prospectivo.
-- **Configuración no optimizada:** el kernel lineal del `SMO` y la red de 4 neuronas son
-  subóptimos, de modo que **esas dos cifras no son representativas de su rendimiento real**.
+- **Configuración no optimizada:** el kernel lineal del `SMO` y la red de 4 neuronas hacen que esas
+  dos cifras **no representen su rendimiento real**.
 
 ### 9.6 Trabajo futuro
 
-1. **Eliminar el solapamiento**, agrupando las filas de valores idénticos en un mismo subconjunto: es
-   la corrección más urgente, afecta al 71.8 % del conjunto de validación.
-2. **Añadir variables clínicas** (hemoglobina, peso, antecedentes obstétricos) para intentar separar
-   `low` de `mid`.
-3. **Ajustar hiperparámetros:** kernel polinomial de grado 2 en `SMO` (el actual es lineal porque el
-   exponente por defecto de Weka es 1), y búsqueda de neuronas y tasa de aprendizaje en
+1. **Eliminar el solapamiento**, agrupando las filas de valores idénticos en un mismo subconjunto:
+   afecta al 71.8 % del conjunto de validación.
+2. **Añadir variables clínicas** (hemoglobina, peso, antecedentes obstétricos) para separar `low`
+   de `mid`.
+3. **Ajustar hiperparámetros:** kernel polinomial de grado 2 en `SMO` (Weka usa exponente 1 por
+   defecto, es decir lineal) y búsqueda de neuronas y tasa de aprendizaje en
    `MultilayerPerceptron`.
-4. **Probar métodos de conjunto** (Random Forest, XGBoost) en la misma partición 70/30, que en
-   trabajos previos con este dataset superaron a los clasificadores individuales.
-5. **Usar salida probabilística** en lugar de predicción dura, para fijar un umbral de alarma según
-   la sensibilidad requerida por el protocolo clínico.
+4. **Probar métodos de conjunto** (Random Forest, XGBoost) en la misma partición 70/30.
+5. **Usar salida probabilística** en lugar de predicción dura, para fijar un umbral de alarma
+   según la sensibilidad requerida por el protocolo clínico.
 6. **Validar con datos externos** de otra población.
 
 
