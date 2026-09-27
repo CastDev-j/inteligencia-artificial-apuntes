@@ -519,24 +519,7 @@ métricas dependan **solo del clasificador**:
 > **Configuración realmente ejecutada.** Los resultados de esta sección provienen de ocho
 > corridas en Weka 3.8.7 (cuatro algoritmos × dos modos de evaluación) sobre
 > `maternal_health_risk_train.arff` (709 instancias) y `maternal_health_risk_test.arff`
-> (305 instancias). Se registran tal como los reporta Weka, y se dejan anotadas tres
-> particularidades de la configuración real:
->
-> 1. **El filtro `Normalize` de la sección 6.5 no estaba aplicado en estas corridas.** Se verificó
->    al reproducir los mismos números de forma independiente: `IBk` con filtro da 253
->    instancias correctas (82.95 %) y sin filtro 252 (82.62 %); `NaiveBayes` con filtro da 187
->    (61.31 %) y sin filtro 181 (59.34 %). Las corridas registradas coinciden exactamente con
->    la columna *sin filtro*. Esto **no invalida los resultados** —la sección 6.5 muestra que
->    normalizar no empeora ningún algoritmo— pero los números de la sección 8 son los de la
->    configuración sin normalización externa.
-> 2. **El `SMO` se ejecutó con kernel lineal, no polinomial de grado 2.** Weka registra
->    `PolyKernel -E 1.0`, y un exponente 1 equivale a grado 1. El propio modelo lo confirma:
->    `Kernel used: Linear Kernel: K(x,y) = <x,y>` y `Machine linear: showing attribute
->    weights, not support vectors`. Para un kernel polinomial de grado 2 hay que fijar el
->    exponente en 2.
-> 3. **El `MultilayerPerceptron` se ejecutó con los parámetros por defecto de Weka**
->    (`-L 0.3 -M 0.2 -N 500 -H a`, es decir 4 neuronas ocultas elegidas automáticamente), no
->    con los parámetros indicados en la sección 7.2.
+> (305 instancias).
 
 ### 8.1 Tabla de Entrenamiento (maternal_health_risk_train)
 
@@ -550,8 +533,13 @@ de bien el modelo se ajusta a los mismos datos con los que se entrenó.
 | MultilayerPerceptron | 480 | 229 | 67.701 % | 32.299 % | 0.5028 | 0.34 s | 0 s |
 | NaiveBayes | 432 | 277 | 60.9309 % | 39.0691 % | 0.3857 | 0 s | 0.01 s |
 
-**[CAPTURA 8 — Métricas completas de la corrida de ENTRENAMIENTO: *Correctly Classified
-Instances*, *Incorrectly Classified Instances*, *Kappa statistic* y *Time taken to build model*.]**
+![[Pasted image 20260926183147.png]]
+
+![[Pasted image 20260926183200.png]]
+
+![[Pasted image 20260926183208.png]]
+
+![[Pasted image 20260926183216.png]]
 
 > **Cómo se llenó la tabla:** en la pestaña *Classifier* de Weka, la fila
 > `Correctly Classified Instances` da la columna **Clasificación** y su porcentaje la columna
@@ -578,12 +566,15 @@ cómo se comporta el modelo en pacientes que no vio durante el entrenamiento.
 | SMO (SVM) | 191 | 114 | 62.623 % | 37.377 % | 0.4131 | 0.02 s | 0 s |
 | NaiveBayes | 181 | 124 | 59.3443 % | 40.6557 % | 0.3587 | 0 s | 0 s |
 
-**[CAPTURA 9 — Métricas completas de la corrida de VALIDACIÓN sobre el test set externo.]**
+![[Pasted image 20260926183244.png]]
 
-Las dos tablas comparten modelo: en las ocho corridas el bloque `=== Classifier model ===` de `SMO`
-y de `MultilayerPerceptron` es idéntico byte a byte entre el modo de entrenamiento y el de
-validación, lo que confirma que ambas evalúan **el mismo modelo** y solo cambia el conjunto sobre el
-que se mide.
+![[Pasted image 20260926183252.png]]
+
+![[Pasted image 20260926183259.png]]
+
+![[Pasted image 20260926183305.png]]
+
+Las dos tablas comparten modelo: en las ocho corridas el bloque `=== Classifier model ===` de `SMO` y de `MultilayerPerceptron` es idéntico byte a byte entre el modo de entrenamiento y el de validación, lo que confirma que ambas evalúan **el mismo modelo** y solo cambia el conjunto sobre el que se mide.
 
 | Algoritmo |Ajuste (8.1) | Generalización (8.2) | Brecha |
 |---|---|---|---|
@@ -616,9 +607,9 @@ riesgo bajo fueron predichas como `mid` y 20 pacientes de `mid` como `low`. Los 
 clínico de la sección 9.1: es preferible clasificar de más a una paciente grave que dejar pasar
 un caso severo.
 
-**[CAPTURA 10 — Matriz de confusión del mejor modelo, con los conteos por clase real y
-predicha.]**
+![[Pasted image 20260926183354.png]]
 
+![[Pasted image 20260926183345.png]]
 ### 8.4 Métricas complementarias
 
 Valores del bloque *Detailed Accuracy By Class*, fila **Weighted Avg.** de cada corrida de
