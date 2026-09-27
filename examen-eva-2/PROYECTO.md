@@ -19,11 +19,10 @@
 5. [Antecedentes, marco teórico e información complementaria](#5-antecedentes-marco-teórico-e-información-complementaria)
 6. [Metodología: preparación de los datos](#6-metodología-preparación-de-los-datos)
 7. [Metodología: cómo se hizo el entrenamiento](#7-metodología-cómo-se-hizo-el-entrenamiento)
-8. [Espacios para insertar capturas](#8-espacios-para-insertar-capturas)
-9. [Resultados](#9-resultados)
-10. [Análisis y discusión de resultados](#10-análisis-y-discusión-de-resultados)
-11. [Conclusiones](#11-conclusiones)
-12. [Referencias](#12-referencias)
+8. [Resultados](#8-resultados)
+9. [Análisis y discusión de resultados](#9-análisis-y-discusión-de-resultados)
+10. [Conclusiones](#10-conclusiones)
+11. [Referencias](#11-referencias)
 
 ---
 
@@ -517,57 +516,146 @@ métricas dependan **solo del clasificador**:
 ---
 ## 8. Resultados
 
+> **Configuración realmente ejecutada.** Los resultados de esta sección provienen de ocho
+> corridas en Weka 3.8.7 (cuatro algoritmos × dos modos de evaluación) sobre
+> `maternal_health_risk_train.arff` (709 instancias) y `maternal_health_risk_test.arff`
+> (305 instancias). Se registran tal como los reporta Weka, y se dejan anotadas tres
+> particularidades de la configuración real:
+>
+> 1. **El filtro `Normalize` de la sección 6.5 no estaba aplicado en estas corridas.** Se verificó
+>    al reproducir los mismos números de forma independiente: `IBk` con filtro da 253
+>    instancias correctas (82.95 %) y sin filtro 252 (82.62 %); `NaiveBayes` con filtro da 187
+>    (61.31 %) y sin filtro 181 (59.34 %). Las corridas registradas coinciden exactamente con
+>    la columna *sin filtro*. Esto **no invalida los resultados** —la sección 6.5 muestra que
+>    normalizar no empeora ningún algoritmo— pero los números de la sección 8 son los de la
+>    configuración sin normalización externa.
+> 2. **El `SMO` se ejecutó con kernel lineal, no polinomial de grado 2.** Weka registra
+>    `PolyKernel -E 1.0`, y un exponente 1 equivale a grado 1. El propio modelo lo confirma:
+>    `Kernel used: Linear Kernel: K(x,y) = <x,y>` y `Machine linear: showing attribute
+>    weights, not support vectors`. Para un kernel polinomial de grado 2 hay que fijar el
+>    exponente en 2.
+> 3. **El `MultilayerPerceptron` se ejecutó con los parámetros por defecto de Weka**
+>    (`-L 0.3 -M 0.2 -N 500 -H a`, es decir 4 neuronas ocultas elegidas automáticamente), no
+>    con los parámetros indicados en la sección 7.2.
+
 ### 8.1 Tabla de Entrenamiento (maternal_health_risk_train)
 
-| Algoritmo            | Clasificación | No Clase | %a  | %error | 1kappa | Tiempo de extracción |
-| -------------------- | ------------- | -------- | --- | ------ | ------ | -------------------- |
-| IBk                  |               |          |     |        |        |                      |
-| SVM                  |               |          |     |        |        |                      |
-| MultilayerPerceptron |               |          |     |        |        |                      |
-| NaiveBayes           |               |          |     |        |        |                      |
+Modo de evaluación: *evaluate on training data* (709 instancias). Mide **ajuste**, es decir, cómo
+de bien el modelo se ajusta a los mismos datos con los que se entrenó.
+
+| Algoritmo | Clasificación | No Clase | %a | %error | 1kappa | Tiempo de extracción | Tiempo de prueba |
+|---|---|---|---|---|---|---|---|
+| IBk (k=1) | 655 | 54 | 92.3836 % | 7.6164 % | 0.8843 | 0 s | 0.02 s |
+| SMO (SVM) | 456 | 253 | 64.3159 % | 35.6841 % | 0.4436 | 0.03 s | 0.01 s |
+| MultilayerPerceptron | 480 | 229 | 67.701 % | 32.299 % | 0.5028 | 0.34 s | 0 s |
+| NaiveBayes | 432 | 277 | 60.9309 % | 39.0691 % | 0.3857 | 0 s | 0.01 s |
 
 **[CAPTURA 8 — Métricas completas de la corrida de ENTRENAMIENTO: *Correctly Classified
 Instances*, *Incorrectly Classified Instances*, *Kappa statistic* y *Time taken to build model*.]**
 
-> **Cómo llenar la tabla:** en la pestaña *Classifier* de Weka, la fila
-> `Correctly Classified Instances` da el valor de la columna **Clasificación** y su porcentaje
-> la columna **%a**; la fila `Incorrectly Classified Instances` da **No Clase** y **%error**;
-> `Kappa statistic` da **1kappa**; y `Time taken to build model` da el **tiempo de extracción**.
+> **Cómo se llenó la tabla:** en la pestaña *Classifier* de Weka, la fila
+> `Correctly Classified Instances` da la columna **Clasificación** y su porcentaje la columna
+> **%a**; la fila `Incorrectly Classified Instances` da **No Clase** y **%error**;
+> `Kappa statistic` da **1kappa**; `Time taken to build model` da el **tiempo de extracción**;
+> y `Time taken to test model` da el **tiempo de prueba**.
+
+**`IBk` no alcanza el 100 % ni sobre sus propios datos de entrenamiento.** No es un error de
+configuración: el dataset contiene **27 grupos de filas con los seis valores idénticos pero
+etiquetas de riesgo distintas** (151 instancias de entrenamiento afectadas). Con k=1 el vecino
+más cercano está a distancia 0, pero es ambiguo entre duplicados contradictorios, de modo que 54
+errores son inevitables. Es decir, **el error de Bayes de este dataset no es cero** y ningún
+clasificador puede superarlo.
 
 ### 8.2 Tabla de Validación (maternal_health_risk_test)
 
-| Algoritmo | Clasificación | No Clase | %a | %error | 1kappa | Tiempo de extracción |
-|-----------|---------------|----------|-----|---------|--------|---------------------|
-| IBk |  |  |  |  |  |  |
-| SVM |  |  |  |  |  |  |
-| MultilayerPerceptron |  |  |  |  |  |  |
-| NaiveBayes |  |  |  |  |  |  |
+Modo de evaluación: *user supplied test set* (305 instancias). Mide **generalización**, es decir,
+cómo se comporta el modelo en pacientes que no vio durante el entrenamiento.
+
+| Algoritmo | Clasificación | No Clase | %a | %error | 1kappa | Tiempo de extracción | Tiempo de prueba |
+|---|---|---|---|---|---|---|---|
+| **IBk (k=1)** | **252** | 53 | **82.623 %** | 17.377 % | **0.7356** | 0 s | 0.01 s |
+| MultilayerPerceptron | 206 | 99 | 67.541 % | 32.459 % | 0.4977 | 0.28 s | 0 s |
+| SMO (SVM) | 191 | 114 | 62.623 % | 37.377 % | 0.4131 | 0.02 s | 0 s |
+| NaiveBayes | 181 | 124 | 59.3443 % | 40.6557 % | 0.3587 | 0 s | 0 s |
 
 **[CAPTURA 9 — Métricas completas de la corrida de VALIDACIÓN sobre el test set externo.]**
 
+Las dos tablas comparten modelo: en las ocho corridas el bloque `=== Classifier model ===` de `SMO`
+y de `MultilayerPerceptron` es idéntico byte a byte entre el modo de entrenamiento y el de
+validación, lo que confirma que ambas evalúan **el mismo modelo** y solo cambia el conjunto sobre el
+que se mide.
+
+| Algoritmo |Ajuste (8.1) | Generalización (8.2) | Brecha |
+|---|---|---|---|
+| IBk (k=1) | 92.38 % | 82.62 % | 9.76 p.p. |
+| MultilayerPerceptron | 67.70 % | 67.54 % | 0.16 p.p. |
+| SMO (SVM) | 64.32 % | 62.62 % | 1.69 p.p. |
+| NaiveBayes | 60.93 % | 59.34 % | 1.59 p.p. |
+
+La lectura de estas brechas es contraintuitiva y conviene explicarla en el análisis: una brecha
+grande indicaría sobreajuste, pero aquí **solo `IBk` la presenta** (9.76 p.p.), y es el mejor
+modelo. En los otros tres la brecha es mínima porque **no llegan a ajustar bien ni sus propios
+datos de entrenamiento**: su problema no es la varianza, sino que el modelo no tiene capacidad
+suficiente para expresar la frontera entre `low` y `mid risk`.
+
 ### 8.3 Matriz de confusión del mejor modelo
 
-<!-- Pegar aquí la matriz de confusión exportada desde Weka -->
+Modelo elegido: **`IBk` (k=1)**, corrida de validación sobre el test set externo (305 instancias).
+Columnas = clase predicha, filas = clase real.
 
-| Real \ Predicha | low (riesgo bajo) | mid (riesgo medio) | high (riesgo alto) |
-|-----------------|--------------------|---------------------|---------------------|
-| **low (riesgo bajo)** |  |  |  |
-| **mid (riesgo medio)** |  |  |  |
-| **high (riesgo alto)** |  |  |  |
+| Real \ Predicha | low (riesgo bajo) | mid (riesgo medio) | high (riesgo alto) | Total real |
+|-----------------|--------------------|---------------------|---------------------|------------|
+| **low (riesgo bajo)** | **100** | 18 | 4 | 122 |
+| **mid (riesgo medio)** | 20 | **79** | 2 | 101 |
+| **high (riesgo alto)** | 3 | 6 | **73** | 82 |
+| **Total predicho** | 123 | 103 | 79 | 305 |
+
+Las 53 instancias mal clasificadas se concentran en la frontera `low` ↔ `mid`: 18 pacientes de
+riesgo bajo fueron predichas como `mid` y 20 pacientes de `mid` como `low`. Los errores hacia
+`high risk` son mínimos (6 en total desde `low` y `mid`), lo que es coherente con el criterio
+clínico de la sección 9.1: es preferible clasificar de más a una paciente grave que dejar pasar
+un caso severo.
 
 **[CAPTURA 10 — Matriz de confusión del mejor modelo, con los conteos por clase real y
 predicha.]**
 
 ### 8.4 Métricas complementarias
 
-<!-- Completar con "Additional metrics" de Weka -->
+Valores del bloque *Detailed Accuracy By Class*, fila **Weighted Avg.** de cada corrida de
+validación (promedio ponderado por número de instancias):
 
-| Algoritmo | Precision | Exhaustividad (macro) | F1 | AUC |
-|-----------|-----------|----------------|-----|-----|
-| IBk |  |  |  |  |
-| SVM |  |  |  |  |
-| MultilayerPerceptron |  |  |  |  |
-| NaiveBayes |  |  |  |  |
+| Algoritmo | Precision | Exhaustividad | F1 | AUC (ROC Area) |
+|-----------|-----------|----------------|-----|----------------|
+| **IBk (k=1)** | **0.828** | **0.826** | **0.827** | **0.903** |
+| MultilayerPerceptron | 0.682 | 0.675 | 0.667 | 0.816 |
+| SMO (SVM) | 0.645 | 0.626 | 0.600 | 0.713 |
+| NaiveBayes | 0.583 | 0.593 | 0.545 | 0.782 |
+
+Como en salud materna no todas las clases tienen el mismo costo, el promedio agregado esconde lo
+importante. La **exhaustividad por clase** en el conjunto de validación es:
+
+| Algoritmo | low | mid | high |
+|-----------|-----|-----|------|
+| **IBk (k=1)** | 0.820 | **0.782** | **0.890** |
+| MultilayerPerceptron | 0.836 | 0.406 | 0.768 |
+| SMO (SVM) | 0.910 | 0.267 | 0.646 |
+| NaiveBayes | 0.934 | 0.139 | 0.646 |
+
+**La clase `mid` es el talón de Aquiles de los cuatro modelos.** `NaiveBayes` solo identifica 14 de
+los 101 casos `mid` del test (exhaustividad 0.139) y envía 81 de ellos a `low risk`; el `SMO` apenas
+llega a 0.267. Solo `IBk` mantiene las tres clases por encima de 0.78. En la práctica esto significa
+que con `NaiveBayes`, `SMO` o `MultilayerPerceptron` la mayoría de las pacientes de riesgo
+intermedio se clasificarían como de riesgo bajo, que es el error más probable de pasar por alto en
+una consulta.
+
+Detalle por clase del modelo elegido (`IBk`, k=1), que es el que se reporta:
+
+| Clase | TP Rate | FP Rate | Precision | Recall | F-Measure | MCC | ROC Area | PRC Area |
+|-------|---------|---------|-----------|--------|-----------|-----|----------|----------|
+| low | 0.820 | 0.126 | 0.813 | 0.820 | 0.816 | 0.693 | 0.891 | 0.823 |
+| mid | 0.782 | 0.118 | 0.767 | 0.782 | 0.775 | 0.661 | 0.884 | 0.750 |
+| high | 0.890 | 0.027 | 0.924 | 0.890 | 0.907 | 0.874 | 0.945 | 0.905 |
+| **Weighted Avg.** | 0.826 | 0.096 | 0.828 | 0.826 | 0.827 | 0.731 | 0.903 | 0.821 |
 
 **[CAPTURA 11 — Curva ROC y área bajo la curva (una clase frente al resto).]**
 
@@ -575,13 +663,23 @@ predicha.]**
 
 ### 8.5 Ejemplo de predicciones individuales
 
-<!-- Pegar las primeras líneas del archivo de predicciones (Output predictions) -->
+Las tres primeras instancias del conjunto de validación, con su vecino más cercano en el
+entrenamiento. Se generaron con la misma configuración de la corrida de 8.2 (`IBk`, k=1, distancia
+euclidiana), de modo que las predicciones coinciden con las reportadas por Weka.
 
-| Instancia | Age | SystolicBP | DiastolicBP | BS | BodyTemp | HeartRate | Real | Predicha | ¿Acierto? |
-|-----------|-----|-----------|-------------|-----|----------|-----------|------|----------|-----------|
-| 1 |  |  |  |  |  |  |  |  |  |
-| 2 |  |  |  |  |  |  |  |  |  |
-| 3 |  |  |  |  |  |  |  |  |  |
+| # | Age | SystolicBP | DiastolicBP | BS | BodyTemp | HeartRate | Real | Vecino 1-NN (train) | Distancia | Predicha | ¿Acierto? |
+|---|-----|-----------|-------------|-----|----------|-----------|------|-----------------------|-----------|----------|-----------|
+| 1 | 35 | 140 | 90 | 13.0 | 98.0 | 70 | high | DiastolicBP=80, resto idéntico → **high** | 0.1961 | high (p=0.997) | Sí |
+| 2 | 30 | 140 | 85 | 7.0 | 98.0 | 70 | high | **Idéntica** → high | 0.0000 | high (p=0.997) | Sí |
+| 3 | 23 | 130 | 70 | 7.01 | 98.0 | 78 | mid | BS=6.8, resto idéntico → mid | 0.0162 | mid (p=0.999) | Sí |
+
+Las tres predicciones son correctas, y la segunda ilustra el caso limite de `IBk`: la instancia de
+test es **exactamente** una fila del entrenamiento (distancia 0.0000), así que el modelo la
+reconoce de memoria. Este comportamiento se repite a gran escala: **219 de las 305 instancias de
+validación (71.8 %) tienen un patrón de valores que ya existe en el conjunto de entrenamiento**. Es
+una limitación de la partición aleatoria sobre un dataset con 562 filas duplicadas exactas, y
+significa que los accuracies de la tabla 8.2 están inflados respecto de lo que ocurriría con
+pacientes nuevas reales. Este matiz se desarrolla en la sección de limitaciones.
 
 ---
 
