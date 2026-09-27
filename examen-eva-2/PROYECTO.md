@@ -6,6 +6,8 @@
 - **Tipo de tarea:** Clasificación supervisada multiclase (3 clases)
 - **Variable objetivo:** `RiskLevel` → `low risk` / `mid risk` / `high risk`
 
+![[Pasted image 20260926172535.png]]
+
 ---
 
 ## Índice
@@ -14,7 +16,7 @@
 2. [¿En qué consiste el proyecto?](#2-en-qué-consiste-el-proyecto)
 3. [¿Por qué se escogió este dataset?](#3-por-qué-se-escogió-este-dataset)
 4. [Descripción del dataset](#4-descripción-del-dataset)
-5. [Información complementaria y fuentes citadas](#5-información-complementaria-y-fuentes-citadas)
+5. [Antecedentes, marco teórico e información complementaria](#5-antecedentes-marco-teórico-e-información-complementaria)
 6. [Metodología: preparación de los datos](#6-metodología-preparación-de-los-datos)
 7. [Metodología: cómo se hizo el entrenamiento](#7-metodología-cómo-se-hizo-el-entrenamiento)
 8. [Espacios para insertar capturas](#8-espacios-para-insertar-capturas)
@@ -34,11 +36,10 @@ glucosa en sangre, temperatura corporal y frecuencia cardíaca.
 
 El dataset se obtuvo del **UCI Machine Learning Repository** (ID 863, donado por Marzia Ahmed,
 Daffodil International University, bajo licencia CC BY 4.0) y fue recolectado en hospitales,
-clínicas comunitarias y centros de atención materna de zonas rurales de Bangladesh mediante un
-**sistema de monitoreo de riesgo basado en Internet de las Cosas (IoT)**. Esto le da al
-problema un valor social directo: la mortalidad materna es una de las metas de los Objetivos
-de Desarrollo Sostenible de la ONU (ODS 3), y en las zonas rurales los recursos humanos
-especializados son escasos.
+clínicas comunitarias y centros de atención materna de zonas rurales de Bangladesh. Esto le da
+al problema un valor social directo: la mortalidad materna es una de las metas de los Objetivos
+de Desarrollo Sostenible de la ONU (Naciones Unidas, 2024), y en las zonas rurales los
+recursos humanos especializados son escasos.
 
 Todo el proceso experimental —carga, particionado, entrenamiento y evaluación— se realizó en
 **Weka**, usando el entorno de clasificación de Weka con la configuración de métricas
@@ -53,50 +54,22 @@ para la entrega.
 
 Durante el embarazo, una mujer puede presentar complicaciones que pueden evolucionar rápidamente y que son
 evitables si se detectan a tiempo (hipertensión, diabetes gestacional, fiebre,
-taquicardia). En las zonas rurales de Bangladesh, el personal médico especializado no está
-siempre disponible, y la supervisión médica puede ocurrir únicamente cada varias semanas.
+taquicardia) (Organización Mundial de la Salud, 2025). En las zonas rurales de Bangladesh, el
+personal médico especializado no está siempre disponible, y la supervisión médica puede ocurrir
+únicamente cada varias semanas.
 
 La pregunta de investigación es:
 
 > **¿Es posible clasificar automáticamente el nivel de riesgo de una embarazada
 > (`low risk`, `mid risk`, `high risk`) a partir de seis constantes vitales de bajo costo,
-> medidas con un dispositivo IoT?**
+> registradas en una consulta de rutina?**
 
 ### 2.2 Solución propuesta
 
 Un clasificador supervisado que, dada la medición de las seis variables, asigna una de las
 tres categorías de riesgo:
 
-```mermaid
-flowchart LR
-    subgraph X["Entrada (x) — constantes vitales medidas por el sensor IoT"]
-        A1["Age — años"]
-        A2["SystolicBP — mmHg"]
-        A3["DiastolicBP — mmHg"]
-        A4["BS — mmol/L"]
-        A5["BodyTemp — °F"]
-        A6["HeartRate — bpm"]
-    end
-
-    M["Clasificador supervisado<br/>entrenado en Weka"]
-
-    subgraph Y["Salida (y) — nivel de riesgo"]
-        L["low risk"]
-        MD["mid risk"]
-        H["high risk"]
-    end
-
-    A1 --> M
-    A2 --> M
-    A3 --> M
-    A4 --> M
-    A5 --> M
-    A6 --> M
-
-    M --> L
-    M --> MD
-    M --> H
-```
+![[Pasted image 20260926171652.png]]
 
 ### 2.3 Alcance del experimento
 
@@ -119,7 +92,7 @@ Se escogió por seis razones concretas:
 
 1. **Relevancia social y alineación con los ODS.** La salud materna es el eje de la meta
    3.1 de los Objetivos de Desarrollo Sostenible: *reducir la tasa de mortalidad materna
-   global a menos de 70 muertes por cada 100,000 nacidos vivos*. Un modelo
+   global a menos de 70 muertes por cada 100,000/SCS* (Naciones Unidas, 2024). Un modelo
    predictivo sobre esta variable tiene impacto directo en esa meta.
 
 2. **Tamaño de muestra apropiado para la carga de un examen.** Con 1,014 registros, el dataset
@@ -131,8 +104,8 @@ Se escogió por seis razones concretas:
    interesante que un problema de dos clases.
 
 4. **Todas las variables son numéricas y de bajo costo de medición.** Age, las dos presiones,
-   la glucosa, la temperatura y la frecuencia cardíaca se obtienen con un dispositivo IoT
-   sencillo. Esto hace el modelo **desplegable en el contexto rural** donde nació el dataset:
+   la glucosa, la temperatura y la frecuencia cardíaca se obtienen con un equipo básico de
+   consulta. Esto hace el modelo **aplicable en el contexto rural** donde nació el dataset:
    no requiere laboratorio, ni imágenes, ni historia clínica completa.
 
 5. **Atributos fisiológicamente interpretables.** A diferencia de un problema de imágenes o de
@@ -163,7 +136,7 @@ Se escogió por seis razones concretas:
 | Valores faltantes | No |
 | Licencia | Creative Commons Attribution 4.0 International (CC BY 4.0) |
 | Fecha de donación | 14 de agosto de 2023 |
-| Origen | Hospitales, clínicas comunitarias y atención materna en zonas rurales de Bangladesh, mediante sistema de monitoreo de riesgo basado en IoT |
+| Origen | Hospitales, clínicas comunitarias y atención materna en zonas rurales de Bangladesh |
 | Autora y fuente | Marzia Ahmed — Daffodil International University |
 
 > **Crédito y atribución de la fuente.** Los datos utilizados en este proyecto proceden del
@@ -200,23 +173,73 @@ Age,SystolicBP,DiastolicBP,BS,BodyTemp,HeartRate,RiskLevel
 
 ### 4.4 Variable objetivo: las tres clases
 
-| Clase       | Significado       | Instancias | % del total |
-| ----------- | ----------------- | ---------- | ----------- |
-| `low risk`  | Riesgo bajo       | 406        | 40.04 %     |
-| `mid risk`  | Riesgo intermedio | 336        | 33.14 %     |
-| `high risk` | Riesgo alto       | 272        | 26.82 %     |
-| **Total**   |                   | **1,014**  | **100 %**   |
+| Clase       | Significado       | En Weka  | Instancias | % del total |
+| ----------- | ----------------- | -------- | ---------- | ----------- |
+| `low risk`  | Riesgo bajo       | `low`    | 406        | 40.04 %     |
+| `mid risk`  | Riesgo intermedio | `mid`    | 336        | 33.14 %     |
+| `high risk` | Riesgo alto       | `high`   | 272        | 26.82 %     |
+| **Total**   |                   |          | **1,014**  | **100 %**   |
 ![[Pasted image 20260926143528.png]]
 
-> Las clases están **balanceadas de forma natural** (proporción 40/33/27). Esto es una ventaja:
-> no será necesario aplicar técnicas de sobremuestreo o submuestreo, y el *accuracy* será una
-> métrica interpretable sin corrección por desbalance.
+> La columna "En Weka" indica el nombre con el que aparecerán las clases dentro de Weka: el
+> archivo `.arff` las abrevia porque Weka no admite espacios en las etiquetas nominales
+> (ver sección 6.2). El significado de cada clase es el mismo.
+
+> Las clases están **balanceadas de forma natural** (proporción 40/33/27).
 
 ---
 
-## 5. Información complementaria
+## 5. Antecedentes, marco teórico e información complementaria
 
-### 5.1 Por qué importan estas constantes vitales
+### 5.1 Antecedentes: qué se ha hecho con esta base de datos
+
+Esta base de datos se ha reutilizado en varios trabajos de aprendizaje automático, casi siempre
+para comparar el desempeño de clasificadores sobre el nivel de riesgo materno:
+
+- **Ahmed et al. (2020)** publicaron el artículo que acompaña al dataset, justifica las seis
+  variables como factores de riesgo y describe el proceso de recolección de los datos.
+- **Togunwa, Babatunde y Abdullah (2023)** combinaron una red neuronal artificial con Random
+  Forest (modelo híbrido) y alcanzaron 94.88 % de *accuracy*; en su tabla comparativa, KNN (65.3 %),
+  SVM (55.5 %) y Naive Bayes (59.3 %) rindieron por debajo de los métodos de conjunto.
+- **Venkatesh, Jha, Kazmi y Zaidi (2024)** compararon XGBoost, Random Forest, KNN, SVM y
+  regresión logística con *accuracies* de 58.7 % a 82.6 %, e identificaron la glucosa en sangre
+  y la presión arterial sistólica como las variables más relevantes.
+
+Lo que aporta este trabajo es comparar los cuatro algoritmos clásicos evaluados aquí
+(KNN, SVM, Naive Bayes y RNA multicapa) bajo un mismo protocolo de partición 70/30 y con las
+métricas de Weka.
+
+### 5.2 Marco teórico: KNN (IBk)
+
+Asigna a una instancia la clase mayoritaria entre sus `k` vecinos más próximos en el espacio de
+atributos, usando una distancia (en este trabajo, euclidiana). No construye un modelo explícito:
+memoriza el conjunto de entrenamiento y decide en el momento de la consulta. Con `k = 1` la
+frontera de decisión se ajusta exactamente a los datos de entrenamiento, por lo que es sensible
+al ruido y a los registros duplicados (Witten et al., 2016).
+
+### 5.3 Marco teórico: SVM
+
+Busca la frontera que maximiza el margen entre las clases; los puntos que la definen son los
+vectores de soporte. Con kernel no lineal (polinomial o RBF) modela fronteras curvas sin
+transformar explícitamente los datos. Es potente con muestras pequeñas, aunque su costo de
+entrenamiento crece con el número de instancias (Witten et al., 2016).
+
+### 5.4 Marco teórico: Naive Bayes
+
+Aplica la regla de Bayes suponiendo que los atributos son independientes entre sí dada la clase;
+la predicción resulta del producto de las probabilidades condicionales de cada atributo. Es muy
+rápido y sirve como línea base, aunque la independencia es una simplificación que rara vez se
+cumple (Witten et al., 2016).
+
+### 5.5 Marco teórico: RNA multicapa (MultilayerPerceptron)
+
+Organiza neuronas en capas: una capa de entrada con las seis constantes vitales, una o más capas
+ocultas que aplican activaciones no lineales y una capa de salida con una neurona por clase. Los
+pesos se ajustan por retropropagación y descenso del gradiente. Su capacidad de modelar
+interacciones no lineales crece con el número de neuronas, pero con pocas instancias tiende al
+sobreajuste (Witten et al., 2016).
+
+### 5.6 Por qué importan estas constantes vitales
 
 La elección de atributos no es arbitraria; cada uno tiene evidencia fisiológica
 asociada a complicaciones del embarazo:
@@ -231,79 +254,38 @@ asociada a complicaciones del embarazo:
 - **Frecuencia cardíaca (HeartRate):** una taquicardia persistente puede ser el primer signo
   de anemia, sepsis o compromiso cardiovascular.
 - **Edad (Age):** las edades extremas (muy jóvenes o mayores de 35 años) se asocian con
-  mayor riesgo obstétrico.
+  mayor riesgo obstétrico (Ahmed et al., 2020; Organización Mundial de la Salud, 2025).
 
-```mermaid
-flowchart LR
-    V1["Presión arterial<br/>SystolicBP / DiastolicBP"] --> C1["Hipertensión gestacional<br/>y preeclampsia"]
-    V2["Glucosa en sangre<br/>BS"] --> C2["Diabetes gestacional<br/>macrosomía y parto prematuro"]
-    V3["Temperatura corporal<br/>BodyTemp"] --> C3["Infección y fiebre<br/>morbilidad materna"]
-    V4["Frecuencia cardíaca<br/>HeartRate"] --> C4["Anemia, sepsis<br/>o compromiso cardiovascular"]
-    V5["Edad<br/>Age"] --> C5["Riesgo obstétrico<br/>por edad extrema"]
+![[Pasted image 20260926171254.png]]
 
-    C1 --> R["Clasificación del<br/>nivel de riesgo"]
-    C2 --> R
-    C3 --> R
-    C4 --> R
-    C5 --> R
-```
+### 5.7 Contexto de la salud materna mundial
 
-### 5.2 Contexto de la salud materna mundial
-
-Según la Organización Mundial de la Salud (OMS), la mayoría de las muertes maternas son
+Según la Organización Mundial de la Salud (2025), la mayoría de las muertes maternas son
 **prevenibles** y se asocian a tres condiciones: (a) ausencia de atención sanitaria calificada
 durante el embarazo y el parto, (b) uso de anticoncepción insuficiente y (c) acceso limitado a
 servicios de salud sexual y reproductiva. Este proyecto aborda el primer punto: **brindar una
 alerta objetiva y automatizada a partir de mediciones poco invasivas**, incluso cuando
 no hay un profesional disponible en el momento.
 
-### 5.3 Roles en el contexto de IoT y telemedicina
-
-El sistema de recolección de estos datos es un ejemplo de **salud conectada**: un conjunto de
-sensores acoplados al cuerpo de la paciente transmite sus constantes vitales a una plataforma
-central, que este proyecto replica en la fase de clasificación. El valor clínico no está en
-reemplazar el criterio médico, sino en **filtrar y priorizar**: de cada cientos de embarazadas
-monitoreadas, un modelo bien entrenado puede señalar rápidamente a cuáles conviene examinar
-primero.
-
-```mermaid
-flowchart LR
-    subgraph PAC["Paciente (zona rural)"]
-        S1["Sensor de presión arterial"]
-        S2["Sensor de glucosa"]
-        S3["Sensor de temperatura"]
-        S4["Sensor de pulso"]
-    end
-
-    S1 --> MCU["Microcontrolador IoT<br/>lectura y transmisión periódica"]
-    S2 --> MCU
-    S3 --> MCU
-    S4 --> MCU
-
-    MCU -->|"Internet"| N["Nodo de inferencia en el borde<br/>clasificador entrenado"]
-    N --> DEC{"Nivel de riesgo"}
-    DEC -->|"low / mid risk"| OK["Seguimiento rutinario"]
-    DEC -->|"high risk"| AL["Alerta prioritaria<br/>revisión médica inmediata"]
-```
-
-> Nota: en este proyecto la fase de **entrenamiento** (Weka, escritorio) es la que replica el
-> nodo de inferencia; la inferencia en el dispositivo se plantea como trabajo futuro
-> (sección 10.4).
-
-### 5.4 Implicaciones éticas
+### 5.8 Implicaciones éticas
 
 - El dataset es **anónimo**: no contiene identificadores personales, lo que reduce riesgos de
   re-identificación.
 - El modelo debe usarse como **apoyo a la decisión profesional**, nunca como sustituto de un
   diagnóstico médico.
-- La licencia CC BY 4.0 obliga a dar crédito a la autoría; este documento lo hace en la sección
-  de Referencias.
+- La licencia CC BY 4.0 obliga a dar crédito a la autoría (Ahmed, 2020); este documento lo
+  hace en la sección de Referencias.
 
 ---
 
 ## 6. Metodología: preparación de los datos
 
 ### 6.1 Carga del dataset en Weka
+
+> **Vía recomendada:** abrir directamente `data/maternal_health_risk_train.arff` con el botón
+> **Open Data…** de la pestaña *Preprocess*. Al ser ARFF, Weka reconoce el esquema y la clase
+> sin pedir ningún dato de formato. La carga manual del CSV que se describe a continuación
+> también es válida, pero es más lenta y propensa a errores de delimitador.
 
 El dataset se cargó en Weka mediante el botón **Open Data…** o el **Data Explorer**, seleccionando
 el archivo `Maternal Health Risk Data Set.csv`. Weka pide confirmar el formato CSV:
@@ -319,8 +301,9 @@ el archivo `Maternal Health Risk Data Set.csv`. Weka pide confirmar el formato C
 > revisar el panel **Attribute** se debe confirmar que `RiskLevel` quedó como `nominal`
 > y que es el **class attribute** (botón derecho → *Set class index* si es necesario).
 
-**[CAPTURA 1 — Carga del CSV en Weka: panel Data Explorer con la relación cargada,
-el conjunto de atributos y `RiskLevel` marcado como clase.]**
+![[Pasted image 20260926172012.png|700]]
+
+![[Pasted image 20260926172021.png|700]]
 
 ### 6.2 Generación de los subconjuntos 70/30
 
@@ -342,8 +325,8 @@ Se generaron **dos formatos** de cada archivo, ambos importables en Weka:
 
 | Archivo | Formato | Instancias | ¿Para qué se usa? |
 |---------|---------|-----------|-------------------|
-| `data/maternal_health_risk_train.dat` | CSV con encabezado (formato equivalente a `iris_train.dat`) | 709 | Carga directa con el formato CSV de Weka |
-| `data/maternal_health_risk_test.dat` | CSV con encabezado (formato equivalente a `iris_test.dat`) | 305 | Carga directa con el formato CSV de Weka |
+| `data/maternal_health_risk_train.dat` | CSV con encabezado | 709 | Carga directa con el formato CSV de Weka |
+| `data/maternal_health_risk_test.dat` | CSV con encabezado | 305 | Carga directa con el formato CSV de Weka |
 | `data/maternal_health_risk_train.arff` | **ARFF nativo** (declarado `@attribute`/`@data`) | 709 | **Recomendado**: Weka detecta el esquema solo, sin configuración manual |
 | `data/maternal_health_risk_test.arff` | **ARFF nativo** | 305 | **Recomendado** para el conjunto de prueba |
 
@@ -353,6 +336,8 @@ Cabecera del `.arff` generado:
 % Maternal Health Risk (UCI, id=863)
 % Ahmed, M. (2020). Maternal Health Risk [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5DP5D
 % Licencia CC BY 4.0. Particion generada por particionado estratificado 70/30 (random_state=42).
+% Clases abreviadas porque Weka no admite espacios en etiquetas nominales:
+%   low = low risk (riesgo bajo) | mid = mid risk (riesgo medio) | high = high risk (riesgo alto)
 @relation maternal_health_risk
 
 @attribute Age numeric
@@ -361,33 +346,25 @@ Cabecera del `.arff` generado:
 @attribute BS numeric
 @attribute BodyTemp numeric
 @attribute HeartRate numeric
-@attribute RiskLevel {low risk, mid risk, high risk}
+@attribute RiskLevel {low, mid, high}
 
 @data
-25,130,80,15,98,86,high risk
+25,130,80,15,98,86,high
 ...
 ```
+
+> **Detalle importante:** en el `.arff` las clases aparecen abreviadas como `low`, `mid` y `high`
+> en lugar de `low risk`, `mid risk` y `high risk`. Weka **no admite espacios dentro de las
+> etiquetas de un atributo nominal**: al leer `{low risk, mid risk, high risk}` las separa por
+> espacios, interpreta `risk` como una etiqueta repetida y aborta con
+> `A nominal attribute (RiskLevel) cannot have duplicate labels (risk)`. Los archivos `.dat`
+> (CSV) sí conservan los nombres originales completos.
 
 > **Ventaja de ARFF:** es el formato nativo de Weka, con los tipos de dato declarados
 > explícitamente. Al abrirlo, el `class attribute` ya queda correctamente configurado y no
 > hay riesgo de errores de parseo por el delimitador.
 
-```mermaid
-flowchart TD
-    CSV["Maternal Health Risk Data Set.csv<br/>1014 registros, 6 features + RiskLevel"]
-    PY["scripts/split_dataset.py<br/>train_test_split<br/>random_state = 42<br/>stratify = RiskLevel"]
-    TR["Train 70 % — 709 registros<br/>284 low / 235 mid / 190 high"]
-    TE["Test 30 % — 305 registros<br/>122 low / 101 mid / 82 high"]
-    V["data/distribucion_split.txt<br/>verificación de estratificación"]
-    WEKA["Weka 3.8<br/>carga de ambos subconjuntos"]
-
-    CSV --> PY
-    PY --> TR
-    PY --> TE
-    PY --> V
-    TR -->|"train.dat / train.arff"| WEKA
-    TE -->|"test.dat / test.arff"| WEKA
-```
+![[Pasted image 20260926172309.png]]
 
 ### 6.3 Verificación de la distribución de los subconjuntos
 
@@ -420,11 +397,13 @@ que train y test son equivalentes también en las variables predictoras:
 | `BodyTemp` | 98.70 | 98.58 | 98 | 98 | 103 | 103 |
 | `HeartRate` | 74.55 | 73.71 | 7 | 60 | 90 | 90 |
 
-**[CAPTURA 2 — Salida de consola de `python scripts/split_dataset.py` mostrando la tabla
-de distribución de clases de original, train y test, con las desviaciones.]**
+![[Pasted image 20260926172758.png]]
+**de distribución de clases de original, train y test, con las desviaciones.]**
 
-**[CAPTURA 3 — Weka luego de cargar `maternal_health_risk_train.arff`: pestaña *Data Explorer*
-con el histograma de `RiskLevel` y el panel *Attribute* mostrando los valores mínimos y máximos.]**
+![[Pasted image 20260926172843.png]]
+
+![[Pasted image 20260926172857.png]]
+**con el histograma de `RiskLevel` y el panel *Attribute* mostrando los valores mínimos y máximos.]**
 
 ### 6.4 Observaciones sobre la calidad de los datos
 
@@ -434,16 +413,10 @@ con la literatura, pero se documentan aquí como parte del análisis:
 
 - **Sin valores faltantes:** no hay `null`, `NaN` ni `?` en ninguna celda. No se requiere imputación.
 - **Alta repetición de registros:** 562 filas son duplicados exactos de otra fila
-  (mismos 6 features y misma clase). Esto es esperable: el sensor IoT registraba lecturas
-  repetidas cuando la visita de la paciente no cambiaba. Como consecuencia, **166 registros
-  idénticos aparecen simultáneamente en train y en test**. En modelos de distancia (como IBk)
-  esto puede dar una ventaja artificial, porque la instancia "gemela" está memorizada en el
-  conjunto de entrenamiento. Es una limitación conocida de este dataset y se discute en la
-  sección 10.
+  (mismos 6 features y misma clase). Esto es esperable: el equipo de medición registraba
+  lecturas repetidas cuando la visita de la paciente no cambiaba. Como consecuencia, **166 registros idénticos aparecen simultáneamente en train y en test**. En modelos de distancia (como IBk) esto puede dar una ventaja artificial, porque la instancia "gemela" está memorizada en el conjunto de entrenamiento. Es una limitación conocida de este dataset y se discute en la sección 10.
 - **Valores atípicos:** 2 registros presentan `HeartRate = 7 bpm`, un valor fisiológicamente
-  improbable (probablemente un error de captura de un valor 70–77). Ambos pertenecen a la clase
-  `low risk`. No se alteraron, pero se señalan como candidata a corrección en el filtro
-  *Replace with median* si se desea mayor robustez.
+  improbable (probablemente un error de captura de un valor 70–77). Ambos pertenecen a la clase `low risk`.
 
 ### 6.5 Preprocesamiento en Weka (filtros)
 
@@ -451,50 +424,49 @@ Aunque no se requiere imputación, se aplicó un **preprocesamiento mínimo dent
 la pestaña *Preprocess*, usando el filtro **`Normalize` (rango −1 a 1) sobre cada atributo
 numérico**, seguido del filtro **`ClassBalancer`** para preservar el balance de clases:
 
-```mermaid
-flowchart TD
-    TRAIN["train.arff — 709 instancias"] --> NORM["Normalize<br/>rango -1 a 1 por atributo"]
-    NORM --> BAL["ClassBalancer<br/>rebalanceo de clases"]
-    BAL --> MODEL["Modelo entrenado<br/>algoritmo en evaluación"]
+![[Pasted image 20260926173443.png|410]]
 
-    TEST["test.arff — 305 instancias<br/>nunca visto en el entrenamiento"] --> APPLY["Se aplica el filtro<br/>YA ENTRENADO"]
-    APPLY --> PRED["Predicciones sobre el test"]
+**Parámetros aplicados.** `Normalize` transforma `x' = (x − min) / (max − min) × S + T`, por lo que la salida queda en `[T, T + S]`. Los valores por defecto (`-S 1.0 -T 0.0`) dan el rango [0, 1]; para
+obtener [−1, 1] se configuró **`-S 2.0 -T -1.0`**, que es lo que se usó aquí.
 
-    MODEL --> PRED
-```
+**La normalización se ajusta solo con el entrenamiento.** El filtro se aplica sobre
+`maternal_health_risk_train.arff` en *Preprocess*, y `maternal_health_risk_test.arff` se carga
+después en *Classifier* como **Supervised test set** (*Test options* → *More options*). Weka
+transforma ese conjunto con los mínimos y máximos ya calculados en el entrenamiento, no con los
+suyos. Normalizar el test por separado, o pre-normalizar el archivo en disco, hace que el modelo
+reciba datos en una escala distinta a la que aprendió y filtra estadísticas del propio conjunto de
+prueba: con `IBk (k=1)` el accuracy cae de **82.95 %** a **69.51 %**, y a **34.10 %** si el test se
+deja sin normalizar. En Weka 3.8.7 la separación entre entrenamiento y prueba no depende de ninguna opción del filtro, sino de la carga en dos archivos distintos.
 
-> **Nota importante sobre el diseño del experimento:** la normalización se aplica
-> **únicamente al conjunto de entrenamiento**. En Weka, esto se logra haciendo doble clic en
-> la fila del clasificador en la pestaña *Classifier* y marcando
-> **"Filter..." → "Use training fold"** solo en la primera etapa. Si se normalizara el dataset
-> completo antes de particionarlo, se filtraría información del conjunto de prueba
-> (*data leakage*) y la evaluación perdería rigurosidad.
+**Prueba de la decisión.** Se compararon los cuatro clasificadores con y sin normalización sobre la
+misma partición:
+
+| Algoritmo | Normalizado | Sin normalizar | Diferencia |
+|-----------|-------------|----------------|------------|
+| `IBk` (k = 1) | 82.95 % (253) | 82.62 % (252) | +0.33 p.p. |
+| `SMO` (SVM) | 62.62 % (191) | 62.62 % (191) | 0.00 p.p. |
+| `MultilayerPerceptron` | 67.54 % (206) | 67.54 % (206) | 0.00 p.p. |
+| `NaiveBayes` | 61.31 % (187) | 59.34 % (181) | +1.97 p.p. |
+
+Normalizar nunca empeora el resultado, pero el efecto es pequeño por dos razones. Primero, `SMO`
+(opción `-N`, por defecto *normalize*) y `MultilayerPerceptron` (opción `-I`, que solo desactiva la
+normalización interna si se marca) **normalizan por dentro**, así que el filtro externo les resulta
+redundante. Segundo, las seis variables ya viven en rangos estrechos y comparables (presión
+70–160, glucosa 6–19, temperatura 98–102), que es justamente el problema que la normalización suele resolver; la diferencia de una sola instancia en `IBk` es ruido estadístico. Se conserva la
+normalización porque es el criterio correcto y verificable, y porque es lo único que mejora a los dos
+clasificadores que no la aplican internamente (`IBk` y `NaiveBayes`).
+
+> **Advertencia sobre el *percentage split*.** En la tabla de entrenamiento (sección 7.1) se usa
+> *Percentage split 70 %* dentro de `train.arff`, de modo que los min/max provienen de las 709
+> instancias y no solo de las 496 resultantes: es una fuga leve que afecta únicamente a esa tabla
+> de diagnóstico. La validación reportada sale de `test.arff` con el mecanismo limpio descrito
+> arriba.
 
 El contraste entre el diseño aplicado y el diseño que habría que evitar:
 
-```mermaid
-flowchart LR
-    subgraph MAL["Diseño incorrecto — fuga de datos (data leakage)"]
-        direction TB
-        A1["Dataset completo"] --> A2["Normalize sobre las 1014 filas"]
-        A2 --> A3["Partición 70/30"]
-        A3 --> A4["Test ya normalizado con<br/>estadísticas que incluyeron al test"]
-    end
+![[Pasted image 20260926173717.png]]
 
-    subgraph BIEN["Diseño aplicado — sin fuga de datos"]
-        direction TB
-        B1["Dataset completo"] --> B2["Partición 70/30<br/>previa a cualquier filtro"]
-        B2 --> B3["Normalize y ClassBalancer<br/>solo sobre train"]
-        B3 --> B4["Test se transforma con<br/>el filtro ya entrenado"]
-    end
-
-    MAL -.->|"evitado"| BIEN
-```
-
-**[CAPTURA 4 — Pestaña *Preprocess* de Weka con la cadena de filtros aplicada y
-el *Attribute Selection* activa.]**
-
----
+![[Pasted image 20260926174338.png]]
 
 ## 7. Metodología: cómo se hizo el entrenamiento
 
@@ -515,24 +487,7 @@ métricas dependan **solo del clasificador**:
    detalle de aciertos y errores instancia por instancia y luego calcular métricas adicionales
    (matriz de confusión, precisión, exhaustividad).
 
-```mermaid
-flowchart TD
-    TR["train.arff — 709 instancias"] --> INT{"Percentage split 70 %<br/>semilla 42"}
-    INT -->|70 % interno| SUB["Subconjunto de aprendizaje<br/>496 instancias"]
-    SUB --> FIT["Ajuste del modelo<br/>Normalize + ClassBalancer + clasificador"]
-    FIT --> MT["Tabla de ENTRENAMIENTO<br/>%a, %error, 1kappa, tiempo"]
-
-    INT -->|30 % interno| HOLDOUT["30 % de train<br/>no usado para ajustar"]
-    MT --> GAP["Brecha train / test<br/>indica sobreajuste"]
-    HOLDOUT -.-> GAP
-
-    TE["test.arff — 305 instancias"] --> ST["Supervised test set"]
-    FIT --> ST
-    ST --> MV["Tabla de VALIDACIÓN<br/>%a, %error, 1kappa, tiempo"]
-    MV --> GAP
-    ST --> PRED["Output predictions<br/>matriz de confusión, precisión, exhaustividad"]
-    GAP --> SEL["Selección del mejor modelo<br/>sección 10"]
-```
+![[Pasted image 20260926174639.png]]
 
 ### 7.2 Configuración de cada clasificador
 
@@ -545,21 +500,7 @@ flowchart TD
 
 ### 7.3 Procedimiento paso a paso (reproducible)
 
-```mermaid
-flowchart TD
-    A["Abrir Weka → GUI → Explorer"] --> B["Pestaña Preprocess:<br/>Open Data… → data/maternal_health_risk_train.arff"]
-    B --> C["Verificar que RiskLevel (nominal)<br/>es el class attribute"]
-    C --> D["Aplicar Normalize + ClassBalancer<br/>solo sobre ENTRENAMIENTO"]
-    D --> E["Pestaña Classifier:<br/>seleccionar algoritmo<br/>IBk / SVM / MLP / NaiveBayes"]
-    E --> F["Click Start → tabla de ENTRENAMIENTO<br/>con el 70 % de percentage split"]
-    F --> G["Test options → Supervised test set<br/>data/maternal_health_risk_test.arff"]
-    G --> H["More options → Output predictions<br/>y Store out predictions en disco"]
-    H --> I["Click Start de nuevo → tabla de VALIDACIÓN"]
-    I --> J{"¿Algoritmo restantes?"}
-    J -->|Sí| E
-    J -->|No| K["Exportar modelo y matriz de confusión<br/>con el botón derecho → Save As…"]
-    K --> L["Copiar los resultados a la sección 9"]
-```
+![[Pasted image 20260926174856.png]]
 
 > **Aclaración sobre la "Tabla de Entrenamiento" vs "Tabla de Validación":**
 > - La **tabla de entrenamiento** proviene de correr el clasificador en modo *Percentage
@@ -569,54 +510,14 @@ flowchart TD
 > La brecha entre ambas tablas es la medida más informativa del ejercicio: si una es alta y la
 > otra baja, el modelo está **sobreajustado** (memoriza el entrenamiento).
 
-**[CAPTURA 5 — Pestaña *Classifier* de Weka con el árbol de decisión / modelo resultante
-de MultilayerPerceptron, mostrando la lista completa de métricas del modelo.]**
+![[Pasted image 20260926175252.png]]
 
-**[CAPTURA 6 — Panel *Test options* con "Supervised test set" y la ruta del .arff de
-prueba, junto con *Output predictions* activado.]**
-
-**[CAPTURA 7 — Menú contextual de un clasificador con la opción "Additional metrics" /
-"Save model…", usado para exportar el modelo y su matriz de confusión.]**
+![[Pasted image 20260926175612.png]]
 
 ---
+## 8. Resultados
 
-## 8. Espacios para insertar capturas
-
-> Reemplazar cada marcador `**[CAPTURA n — …]**` por la imagen real
-> (Markdown: `![Descripción](imagenes/captura_n.png)`).
-
-### 8.1 Carga e inspección de datos
-
-| # | Qué debe mostrar la captura | Ruta sugerida |
-|---|----------------------------|---------------|
-| 1 | Panel **Data Explorer** con el dataset cargado y `RiskLevel` como class attribute | `imagenes/captura_01_carga_csv.png` |
-| 2 | Salida de la script con la tabla de distribución 70/30 | `imagenes/captura_02_distribucion.png` |
-| 3 | Histograma de `RiskLevel` en el train y en el test | `imagenes/captura_03_histograma_clases.png` |
-| 4 | Pestaña **Preprocess** con la cadena de filtros | `imagenes/captura_04_preprocess.png` |
-
-### 8.2 Entrenamiento
-
-| # | Qué debe mostrar la captura | Ruta sugerida |
-|---|----------------------------|---------------|
-| 5 | Selección y configuración del clasificador (parámetros) | `imagenes/captura_05_configuracion.png` |
-| 6 | Modelo resultante (árbol / lista de pesos del MLP / reglas de IBk) | `imagenes/captura_06_modelo.png` |
-| 7 | Panel **Test options** con el test set externo cargado | `imagenes/captura_07_test_options.png` |
-| 8 | Métricas completas de la corrida de **entrenamiento** | `imagenes/captura_08_resultados_entrenamiento.png` |
-| 9 | Métricas completas de la corrida de **validación** | `imagenes/captura_09_resultados_validacion.png` |
-
-### 8.3 Análisis
-
-| # | Qué debe mostrar la captura | Ruta sugerida |
-|---|----------------------------|---------------|
-| 10 | **Matriz de confusión** del mejor clasificador | `imagenes/captura_10_matriz_confusion.png` |
-| 11 | Curva ROC / área bajo la curva (una clase vs resto) | `imagenes/captura_11_roc.png` |
-| 12 | Comparación gráfica de `%error` entre los 4 algoritmos | `imagenes/captura_12_comparativa.png` |
-
----
-
-## 9. Resultados
-
-### 9.1 Tabla de Entrenamiento (maternal_health_risk_train)
+### 8.1 Tabla de Entrenamiento (maternal_health_risk_train)
 
 | Algoritmo            | Clasificación | No Clase | %a  | %error | 1kappa | Tiempo de extracción |
 | -------------------- | ------------- | -------- | --- | ------ | ------ | -------------------- |
@@ -633,7 +534,7 @@ Instances*, *Incorrectly Classified Instances*, *Kappa statistic* y *Time taken 
 > la columna **%a**; la fila `Incorrectly Classified Instances` da **No Clase** y **%error**;
 > `Kappa statistic` da **1kappa**; y `Time taken to build model` da el **tiempo de extracción**.
 
-### 9.2 Tabla de Validación (maternal_health_risk_test)
+### 8.2 Tabla de Validación (maternal_health_risk_test)
 
 | Algoritmo | Clasificación | No Clase | %a | %error | 1kappa | Tiempo de extracción |
 |-----------|---------------|----------|-----|---------|--------|---------------------|
@@ -644,20 +545,20 @@ Instances*, *Incorrectly Classified Instances*, *Kappa statistic* y *Time taken 
 
 **[CAPTURA 9 — Métricas completas de la corrida de VALIDACIÓN sobre el test set externo.]**
 
-### 9.3 Matriz de confusión del mejor modelo
+### 8.3 Matriz de confusión del mejor modelo
 
 <!-- Pegar aquí la matriz de confusión exportada desde Weka -->
 
-| Real \ Predicha | low risk | mid risk | high risk |
-|-----------------|----------|----------|-----------|
-| **low risk** |  |  |  |
-| **mid risk** |  |  |  |
-| **high risk** |  |  |  |
+| Real \ Predicha | low (riesgo bajo) | mid (riesgo medio) | high (riesgo alto) |
+|-----------------|--------------------|---------------------|---------------------|
+| **low (riesgo bajo)** |  |  |  |
+| **mid (riesgo medio)** |  |  |  |
+| **high (riesgo alto)** |  |  |  |
 
 **[CAPTURA 10 — Matriz de confusión del mejor modelo, con los conteos por clase real y
 predicha.]**
 
-### 9.4 Métricas complementarias
+### 8.4 Métricas complementarias
 
 <!-- Completar con "Additional metrics" de Weka -->
 
@@ -672,7 +573,7 @@ predicha.]**
 
 **[CAPTURA 12 — Comparación gráfica del `%error` entre los 4 algoritmos.]**
 
-### 9.5 Ejemplo de predicciones individuales
+### 8.5 Ejemplo de predicciones individuales
 
 <!-- Pegar las primeras líneas del archivo de predicciones (Output predictions) -->
 
@@ -684,11 +585,11 @@ predicha.]**
 
 ---
 
-## 10. Análisis y discusión de resultados
+## 9. Análisis y discusión de resultados
 
 <!-- Completar una vez que se tengan los números de la sección 9 -->
 
-### 10.1 Criterios de comparación
+### 9.1 Criterios de comparación
 
 Para elegir el clasificador final se consideraron cuatro criterios, en este orden de prioridad
 clínica:
@@ -698,14 +599,14 @@ clínica:
    sí, un accuracy alto puede ser engañoso; un **kappa cercano a 1** indica un modelo que
    realmente discrimina `low`, `mid` y `high risk`.
 2. **%error en el conjunto de prueba (generalización):** la capacidad de funcionar con pacientes
-   nuevos es el requisito real en un sistema de monitoreo.
+   nuevos es el requisito real de un modelo que se aplique en consulta.
 3. **Exhaustividad (recall) de la clase `high risk`:** desde el punto de vista de salud pública,
    **es preferible clasificar de más a una paciente de riesgo alto que dejar pasar un caso
    grave**. Un falso negativo en salud materna tiene un costo mucho mayor que un falso positivo.
-4. **Tiempo de entrenamiento y complejidad del modelo:** un modelo que tarde 0.02 s puede
-   ejecutarse en un dispositivo IoT de bajo consumo en el sitio; uno que tarde minutos, no.
+4. **Tiempo de entrenamiento y complejidad del modelo:** un modelo que tarde 0.02 s es
+   utilizable en la práctica; uno que tarde minutos, no.
 
-### 10.2 Interpretación de la brecha train / test
+### 9.2 Interpretación de la brecha train / test
 
 La diferencia entre la tabla de entrenamiento (sección 9.1) y la de validación (sección 9.2)
 es el indicador de **sobreajuste**:
@@ -730,7 +631,7 @@ flowchart TD
     G --> H
 ```
 
-### 10.3 Limitaciones del estudio
+### 9.3 Limitaciones del estudio
 
 - **Tamaño de muestra reducido** (1,014 registros) y proviene de un solo país (Bangladesh);
   los hallazgos no se generalizan a otras poblaciones sin reentrenamiento.
@@ -740,23 +641,24 @@ flowchart TD
 - **Multiclase con clases cercanas:** `low risk` y `mid risk` pueden no ser separables de forma
   nítida con solo estas 6 variables. Un desempeño cercano al azar en esas dos clases es un
   resultado **esperable y científicamente honesto**, no un error del experimento.
-- **Sin validación clínica:** las etiquetas `RiskLevel` provienen del criterio de los
-  sensores/dispositivos, no de un estudio clínico prospectivo.
+- **Sin validación clínica:** las etiquetas `RiskLevel` provienen del criterio clínico de las
+  mediciones registradas, no de un estudio clínico prospectivo.
 
-### 10.4 Trabajo futuro
+### 9.4 Trabajo futuro
 
 1. Reentrenar con la eliminación de duplicados para medir el impacto real del solapamiento.
 2. Añadir más variables clínicas (hemoglobina, peso, altura, antecedentes obstétricos) para
    intentar separar mejor `low risk` de `mid risk`.
-3. Implementar el modelo en un microcontrolador (ESP32) o en un teléfono móvil como capa de
-   **inferencia en el borde (edge inference)** dentro de la arquitectura IoT original.
+3. Probar modelos más potentes y métodos de conjunto (por ejemplo, Random Forest o XGBoost),
+   que en trabajos previos con este mismo dataset superaron a los clasificadores
+   individuales aquí evaluados.
 4. Sustituir la predicción dura por una **salida probabilística** (probabilidades por clase),
    lo que permitiría un umbral de alarma configurable según la sensibilidad requerida
    por el protocolo clínico.
 
 ---
 
-## 11. Conclusiones
+## 10. Conclusiones
 
 1. El dataset **Maternal Health Risk** de la UCI es adecuado para un ejercicio de
    clasificación multiclase porque combina tamaño manejable, atributos numéricos de bajo costo,
@@ -783,7 +685,7 @@ flowchart TD
 
 ---
 
-## 12. Referencias
+## 11. Referencias
 
 1. **Ahmed, M. (2020).** *Maternal Health Risk* [Conjunto de datos, ID 863]. UCI Machine
    Learning Repository, Irvine (California, EE. UU.). Fecha de donación: 14 de agosto de 2023.
@@ -797,23 +699,37 @@ flowchart TD
    Factor of Maternal Health in Remote Area Using the Internet of Things (IoT). En
    *Lecture Notes in Electrical Engineering*, vol. 632, pp. 357–365 (InECCE2019).
    Springer Singapore. <https://doi.org/10.1007/978-981-15-2317-5_30>
-   Artículo que acompaña al dataset: describe el sistema IoT de recolección de datos y
-   justifica las seis variables como factores de riesgo de mortalidad materna (sección 5.1).
+   Artículo que acompaña al dataset: describe el proceso de recolección de los datos y
+   justifica las seis variables como factores de riesgo de mortalidad materna (sección 5.6).
 
-3. **Organización Mundial de la Salud.** *Maternal mortality* (Factsheet, 7 de abril de 2025).
+3. **Togunwa, T. O., Babatunde, A. O., & Abdullah, K.-u.-R. (2023).** Deep hybrid model for
+   maternal health risk classification in pregnancy: synergy of ANN and random forest.
+   *Frontiers in Artificial Intelligence*, 6, 1213436.
+   <https://doi.org/10.3389/frai.2023.1213436>
+   Antecedente directo: usa este mismo dataset y reporta el desempeño de KNN, SVM y Naive Bayes
+   frente a un modelo híbrido (sección 5.1).
+
+4. **Venkatesh, S., Jha, H., Kazmi, F., & Zaidi, S. (2024).** Classification of Maternal Health
+   Risks Using Machine Learning Methods. En *Advances in Digital Health and Medical
+   Bioengineering (EHB 2023)*, IFMBE Proceedings, vol. 109. Springer, Cham.
+   <https://doi.org/10.1007/978-3-031-62502-2_91>
+   Antecedente directo: compara KNN, SVM y otros clasificadores sobre este dataset
+   (sección 5.1).
+
+5. **Organización Mundial de la Salud.** *Maternal mortality* (Factsheet, 7 de abril de 2025).
    <https://www.who.int/news-room/fact-sheets/detail/maternal-mortality>
-   Define las causas de muerte materna y su carácter prevenible (sección 5.2).
+   Define las causas de muerte materna y su carácter prevenible (secciones 2.1 y 5.7).
 
-4. **Naciones Unidas.** *Objetivo de Desarrollo Sostenible 3: Salud y Bienestar*.
+6. **Naciones Unidas.** *Objetivo de Desarrollo Sostenible 3: Salud y Bienestar*.
    <https://sdgs.un.org/goals/goal3>
-   Meta 3.1: reducir la mortalidad materna a menos de 70 muertes por cada 100,000 nacidos vivos,
+   Meta 3.1: reducir la mortalidad materna a menos de 70 muertes por cada 100,000/SCS,
    marco en el que se justifica la relevancia del problema (secciones 1, 3 y 11).
 
-5. **Witten, I. H., Frank, E., Hall, M. A., & Pal, C. J. (2016).** *Data Mining: Practical
+7. **Witten, I. H., Frank, E., Hall, M. A., & Pal, C. J. (2016).** *Data Mining: Practical
    Machine Learning Tools and Techniques* (4.ª ed.). Morgan Kaufmann.
-   Conceptos de validación train/test, métricas de desempeño y Kappa statistic aplicados en
-   el análisis de la sección 10, así como la documentación de la herramienta Weka 3.8 usada
-   en el entrenamiento y la evaluación.
+   Base teórica de los cuatro algoritmos del marco teórico (secciones 5.2 a 5.5), de los
+   conceptos de validación train/test y de las métricas de desempeño, incluido el
+   *Kappa statistic* analizado en la sección 10.
 
 > El particionado de los datos (sección 6.2) se realizó con `scikit-learn`, una biblioteca
 > abierta de uso común en aprendizaje automático; no se cita de forma específica porque

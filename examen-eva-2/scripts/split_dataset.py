@@ -3,8 +3,8 @@ Genera las particiones de entrenamiento (70%) y prueba (30%) del dataset
 Maternal Health Risk con formato importable en WEKA.
 
 Salidas (carpeta data/):
-    maternal_health_risk_train.dat   -> 70%  (formato .dat numerico, equivalente a iris_train.dat)
-    maternal_health_risk_test.dat    -> 30%  (formato .dat numerico, equivalente a iris_test.dat)
+    maternal_health_risk_train.dat   -> 70%  (CSV con encabezado, para abrir en Weka con el filtro CSV)
+    maternal_health_risk_test.dat    -> 30%  (CSV con encabezado, para abrir en Weka con el filtro CSV)
     maternal_health_risk_train.arff  -> 70%  (formato nativo ARFF de WEKA)
     maternal_health_risk_test.arff   -> 30%  (formato nativo ARFF de WEKA)
     distribucion_split.txt           -> reporte de verificacion de la distribucion
@@ -29,12 +29,21 @@ TEST_SIZE = 0.30
 TARGET = "RiskLevel"
 CLASSES = ["low risk", "mid risk", "high risk"]
 
+# Weka no admite espacios dentro de las etiquetas de un atributo nominal: al leer
+# "{low risk, mid risk, high risk}" las parte por espacios y falla con
+# "A nominal attribute (RiskLevel) cannot have duplicate labels (risk)".
+# En el .arff las clases se abrevian a una sola palabra; el significado queda
+# documentado en la cabecera del propio archivo.
+ARFF_CLASSES = {"low risk": "low", "mid risk": "mid", "high risk": "high"}
+
 FEATURES = ["Age", "SystolicBP", "DiastolicBP", "BS", "BodyTemp", "HeartRate"]
 
 ARFF_HEADER = f"""% Maternal Health Risk (UCI, id=863)
 % Ahmed, M. (2020). Maternal Health Risk [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5DP5D
 % Licencia CC BY 4.0. Particion generada por particionado estratificado 70/30 (random_state={RANDOM_STATE}).
 % El CSV de UCI contiene 1014 registros aunque su ficha declara 1013 instancias.
+% Clases abreviadas porque Weka no admite espacios en etiquetas nominales:
+%   low = low risk (riesgo bajo) | mid = mid risk (riesgo medio) | high = high risk (riesgo alto)
 % Generado por scripts/split_dataset.py
 @relation maternal_health_risk
 
@@ -44,7 +53,7 @@ ARFF_HEADER = f"""% Maternal Health Risk (UCI, id=863)
 @attribute BS numeric
 @attribute BodyTemp numeric
 @attribute HeartRate numeric
-@attribute RiskLevel {{{', '.join(CLASSES)}}}
+@attribute RiskLevel {{{', '.join(ARFF_CLASSES.values())}}}
 
 @data
 """
@@ -89,7 +98,7 @@ def guardar(df: pd.DataFrame, ruta: Path, con_header: bool) -> None:
 
 
 def guardar_arff(df: pd.DataFrame, ruta: Path) -> None:
-    cuerpo = df[FEATURES].apply(formatear_columna).join(df[TARGET])
+    cuerpo = df[FEATURES].apply(formatear_columna).join(df[TARGET].map(ARFF_CLASSES))
     cuerpo = cuerpo.to_csv(index=False, header=False, lineterminator="\n").strip()
     ruta.write_text(f"{ARFF_HEADER}{cuerpo}\n", encoding="utf-8")
 
