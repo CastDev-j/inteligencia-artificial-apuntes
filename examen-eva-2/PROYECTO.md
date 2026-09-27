@@ -143,7 +143,7 @@ Se escogió por seis razones concretas:
 > (ID 863), creado y donado por **Marzia Ahmed** (Daffodil International University).
 > El archivo `Maternal Health Risk Data Set.csv` es una copia local sin modificaciones de
 > dicho dataset. Al estar bajo licencia **CC BY 4.0**, reutilizarlo exige mantener esta
-> atribución, que se completa en la sección 12 de Referencias.
+> atribución, que se completa en la sección 11 de Referencias.
 
 ### 4.2 Estructura del archivo CSV original
 
@@ -413,7 +413,7 @@ con la literatura, pero se documentan aquí como parte del análisis:
 - **Sin valores faltantes:** no hay `null`, `NaN` ni `?` en ninguna celda. No se requiere imputación.
 - **Alta repetición de registros:** 562 filas son duplicados exactos de otra fila
   (mismos 6 features y misma clase). Esto es esperable: el equipo de medición registraba
-  lecturas repetidas cuando la visita de la paciente no cambiaba. Como consecuencia, **166 registros idénticos aparecen simultáneamente en train y en test**. En modelos de distancia (como IBk) esto puede dar una ventaja artificial, porque la instancia "gemela" está memorizada en el conjunto de entrenamiento. Es una limitación conocida de este dataset y se discute en la sección 10.
+  lecturas repetidas cuando la visita de la paciente no cambiaba. Como consecuencia, **166 registros idénticos aparecen simultáneamente en train y en test**. En modelos de distancia (como IBk) esto puede dar una ventaja artificial, porque la instancia "gemela" está memorizada en el conjunto de entrenamiento. Es una limitación conocida de este dataset y se discute en la sección 9.5.
 - **Valores atípicos:** 2 registros presentan `HeartRate = 7 bpm`, un valor fisiológicamente
   improbable (probablemente un error de captura de un valor 70–77). Ambos pertenecen a la clase `low risk`.
 
@@ -610,6 +610,7 @@ un caso severo.
 ![[Pasted image 20260926183354.png]]
 
 ![[Pasted image 20260926183345.png]]
+
 ### 8.4 Métricas complementarias
 
 Valores del bloque *Detailed Accuracy By Class*, fila **Weighted Avg.** de cada corrida de
@@ -648,9 +649,16 @@ Detalle por clase del modelo elegido (`IBk`, k=1), que es el que se reporta:
 | high | 0.890 | 0.027 | 0.924 | 0.890 | 0.907 | 0.874 | 0.945 | 0.905 |
 | **Weighted Avg.** | 0.826 | 0.096 | 0.828 | 0.826 | 0.827 | 0.731 | 0.903 | 0.821 |
 
-**[CAPTURA 11 — Curva ROC y área bajo la curva (una clase frente al resto).]**
+Curvas ROC de los cuatro modelos, una por clase, sobre el conjunto de validación. El área bajo
+cada curva es el valor de AUC de la tabla de detalle anterior; la diagonal punteada es el azar
+(AUC = 0.50).
 
-**[CAPTURA 12 — Comparación gráfica del `%error` entre los 4 algoritmos.]**
+![[Pasted image 20260926191204.png]]
+
+Comparación del `%error` en las dos corridas. `IBk` es el único con una separación apreciable
+entre ajuste y generalización, y esa separación es la mayor: memoriza parte del entrenamiento.
+
+![[Pasted image 20260926191215.png]]
 
 ### 8.5 Ejemplo de predicciones individuales
 
@@ -670,69 +678,119 @@ reconoce de memoria. Este comportamiento se repite a gran escala: **219 de las 3
 validación (71.8 %) tienen un patrón de valores que ya existe en el conjunto de entrenamiento**. Es
 una limitación de la partición aleatoria sobre un dataset con 562 filas duplicadas exactas, y
 significa que los accuracies de la tabla 8.2 están inflados respecto de lo que ocurriría con
-pacientes nuevas reales. Este matiz se desarrolla en la sección de limitaciones.
+pacientes nuevas reales. Este matiz se desarrolla en la sección 9.5.
 
 ---
 
 ## 9. Análisis y discusión de resultados
-
-<!-- Completar una vez que se tengan los números de la sección 9 -->
 
 ### 9.1 Criterios de comparación
 
 Para elegir el clasificador final se consideraron cuatro criterios, en este orden de prioridad
 clínica:
 
-1. **Kappa statistic (`1kappa`):** es la métrica principal, porque a diferencia del accuracy
-   (exactitud) corrige el desempeño por azar. En problemas de salud con clases cercanas entre
-   sí, un accuracy alto puede ser engañoso; un **kappa cercano a 1** indica un modelo que
-   realmente discrimina `low`, `mid` y `high risk`.
-2. **%error en el conjunto de prueba (generalización):** la capacidad de funcionar con pacientes
-   nuevos es el requisito real de un modelo que se aplique en consulta.
-3. **Exhaustividad (recall) de la clase `high risk`:** desde el punto de vista de salud pública,
-   **es preferible clasificar de más a una paciente de riesgo alto que dejar pasar un caso
-   grave**. Un falso negativo en salud materna tiene un costo mucho mayor que un falso positivo.
-4. **Tiempo de entrenamiento y complejidad del modelo:** un modelo que tarde 0.02 s es
-   utilizable en la práctica; uno que tarde minutos, no.
+1. **Kappa statistic (`1kappa`):** corrige el desempeño por azar, a diferencia del accuracy; un
+   valor cercano a 1 indica que el modelo discrimina realmente las tres clases.
+2. **%error en el conjunto de prueba:** la capacidad de funcionar con pacientes nuevos es el
+   requisito real de un modelo aplicable en consulta.
+3. **Exhaustividad (recall) de `high risk`:** en salud pública es preferible clasificar de más a
+   una paciente de riesgo alto que dejar pasar un caso grave.
+4. **Tiempo de entrenamiento y complejidad:** un modelo que tarda 0.02 s es utilizable en la
+   práctica; uno que tarda minutos, no.
 
-### 9.2 Interpretación de la brecha train / test
+### 9.2 Modelo elegido: `IBk` (k = 1)
 
-La diferencia entre la tabla de entrenamiento (sección 9.1) y la de validación (sección 9.2)
-es el indicador de **sobreajuste**:
+Aplicando los cuatro criterios al conjunto de validación (305 instancias):
 
-- **Brecha pequeña (< 5 %):** el modelo generaliza bien. Es el escenario deseado.
-- **Brecha grande (> 10 %):** el modelo memorizó el entrenamiento. Causas probables: demasiadas
-  unidades neuronas con pocas muestras, o un K muy bajo en IBk.
-- En este dataset, es esperable que **IBk y SVM** muestren métricas de entrenamiento
-  prácticamente perfectas (100 % de aciertos) por la alta repetición de registros descrita en
-  6.4, y que su desempeño en prueba se reduzca. Esa brecha debe reportarse explícitamente.
+| Criterio (9.1) | `IBk` (k=1) | `MultilayerPerceptron` | `SMO` (SVM) | `NaiveBayes` |
+|----------------|--------------|----------------------|-------------|--------------|
+| 1. **Kappa (principal)** | **0.7356** | 0.4977 | 0.4131 | 0.3587 |
+| 2. **%error en prueba** | **17.377 %** | 32.459 % | 37.377 % | 40.6557 % |
+| 3. **Exhaustividad `high`** | **0.890** | 0.768 | 0.646 | 0.646 |
+| 4. **Tiempo de construcción** | **0 s** | 0.28 s | 0.02 s | 0 s |
 
-![[Pasted image 20260926181407.png]]
+Gana en los cuatro criterios a la vez y por margen amplio (20 p.p. de kappa sobre el segundo lugar),
+así que la decisión no depende de qué criterio se privilegie. k = 1 basta porque un vecino
+individual ya localiza bien a la paciente: la matriz de confusión (sección 8.3) muestra solo 6
+errores de 82 hacia `high risk`. Su AUC de 0.903, el mejor de los cuatro, indica además que
+**ordena** bien a las pacientes por riesgo aunque el corte de decisión no sea óptimo, que es
+justo lo que importa en un sistema de alerta temprana.
 
-### 9.3 Limitaciones del estudio
+### 9.3 Brecha train/test: subajuste, no sobreajuste
 
-- **Tamaño de muestra reducido** (1,014 registros) y proviene de un solo país (Bangladesh);
-  los hallazgos no se generalizan a otras poblaciones sin reentrenamiento.
-- **Duplicados en el dataset** (166 registros aparecen en train y test) inflan de forma
-  optimista las métricas de los clasificadores por distancia.
-- **Valores atípicos** de `HeartRate` no corregidos (2 registros con 7 bpm).
-- **Multiclase con clases cercanas:** `low risk` y `mid risk` pueden no ser separables de forma
-  nítida con solo estas 6 variables. Un desempeño cercano al azar en esas dos clases es un
-  resultado **esperable y científicamente honesto**, no un error del experimento.
-- **Sin validación clínica:** las etiquetas `RiskLevel` provienen del criterio clínico de las
-  mediciones registradas, no de un estudio clínico prospectivo.
+| Modelo | Ajuste (8.1) | Generalización (8.2) | Brecha | Lectura |
+|--------|--------------|-----------------------|--------|---------|
+| `IBk` (k=1) | 92.38 % | 82.62 % | 9.76 p.p. | Memorización parcial; aun así el mejor modelo |
+| `MultilayerPerceptron` | 67.70 % | 67.54 % | 0.16 p.p. | **Subajuste** |
+| `SMO` (SVM) | 64.32 % | 62.62 % | 1.69 p.p. | **Subajuste** |
+| `NaiveBayes` | 60.93 % | 59.34 % | 1.59 p.p. | **Subajuste** |
 
-### 9.4 Trabajo futuro
+La lectura es contraintuitiva: **la mayor brecha corresponde al mejor modelo**. Una brecha pequeña
+no indica buena generalización, sino que el modelo apenas diferencia un conjunto del otro porque
+**no aprovecha ninguno**. Los tres modelos con brecha mínima son también los que peor rinden en sus
+propios datos de entrenamiento, lo que apunta a falta de capacidad y no a varianza. La causa
+probable es que se ejecutaron sin ajustar hiperparámetros: el `SMO` con **kernel lineal** y la red
+con solo 4 neuronas ocultas no pueden trazar fronteras curvas en un espacio de 6 dimensiones.
 
-1. Reentrenar con la eliminación de duplicados para medir el impacto real del solapamiento.
-2. Añadir más variables clínicas (hemoglobina, peso, altura, antecedentes obstétricos) para
-   intentar separar mejor `low risk` de `mid risk`.
-3. Probar modelos más potentes y métodos de conjunto (por ejemplo, Random Forest o XGBoost),
-   que en trabajos previos con este mismo dataset superaron a los clasificadores
-   individuales aquí evaluados.
-4. Sustituir la predicción dura por una **salida probabilística** (probabilidades por clase),
-   lo que permitiría un umbral de alarma configurable según la sensibilidad requerida
-   por el protocolo clínico.
+Conviene no sobreinterpretar las diferencias: 305 instancias equivalen a 0.33 p.p. por instancia,
+así que la distancia entre primero y segundo (15 p.p.) es sólida, pero las de 1–2 p.p. entre los
+tres modelos inferiores caen dentro del ruido muestral.
+
+### 9.4 El problema de la clase `mid`
+
+| Modelo | Exhaustividad `mid` | De las 101 pacientes `mid` del test, cuántas se clasificaron como `low` |
+|--------|---------------------|-----------------------------------------------|
+| `IBk` (k=1) | 0.782 | 20 (19.8 %) |
+| `MultilayerPerceptron` | 0.406 | 55 (54.5 %) |
+| `SMO` (SVM) | 0.267 | 68 (67.3 %) |
+| `NaiveBayes` | 0.139 | 81 (80.2 %) |
+
+Es el hallazgo de mayor implicancia clínica, y el riesgo apunta en la dirección peligrosa: degradar
+`mid` a `low` **subdiagnostica de forma silenciosa** al grupo que más se beneficia del seguimiento
+rutinario, porque la paciente no muestra síntomas. Con `NaiveBayes`, 4 de cada 5 pacientes de
+riesgo medio pasarían inadvertidas.
+
+La causa está en los datos, no en los modelos. El análisis de `NaiveBayes` (sección 8) muestra que
+la glucemia media es 7.3 / 7.9 / 12.0 para `low` / `mid` / `high` —separación excelente entre `low`
+y `high`— pero `low` y `mid` se solapan casi por completo (7.3 ± 0.7 frente a 7.9 ± 2.4, mismo
+rango 6–9). La presión sistólica media también difiere poco (105 frente a 114, con desviaciones de
+16 y 15). **`low` y `mid` son la misma región del dataset**, y por eso 38 de los 53 errores de `IBk`
+caen exactamente en esa frontera. Cualquier modelo construido solo con estas seis constantes tiene
+un techo de desempeño en `mid`; separarla exigiría información clínica adicional (9.6, punto 2).
+
+### 9.5 Limitaciones del estudio
+
+- **Muestra reducida** (1014 registros) y de un solo país (Bangladesh): no se generaliza a otras
+  poblaciones sin reentrenamiento.
+- **Solapamiento train/test:** 219 de las 305 instancias de validación (71.8 %) replican un patrón
+  de valores presente en el entrenamiento. Los accuracies de 8.2 **no estiman el desempeño con
+  pacientes nuevas**.
+- **Etiquetas intrínsecamente ambiguas:** 27 grupos de registros con los 6 valores idénticos tienen
+  etiquetas de riesgo distintas (151 instancias). Hay filas indistinguibles con etiqueta
+  contradictoria, lo que fija un **error de Bayes no nulo**: ningún modelo puede superar el 100 %
+  de accuracy en este conjunto.
+- **Clases solapadas:** un desempeño mediocre en `low` y `mid` es un resultado esperable y
+  científicamente honesto, no un error del experimento.
+- **Sin validación clínica:** las etiquetas provienen del criterio clínico de las mediciones
+  registradas, no de un estudio prospectivo.
+- **Configuración no optimizada:** el kernel lineal del `SMO` y la red de 4 neuronas son
+  subóptimos, de modo que **esas dos cifras no son representativas de su rendimiento real**.
+
+### 9.6 Trabajo futuro
+
+1. **Eliminar el solapamiento**, agrupando las filas de valores idénticos en un mismo subconjunto: es
+   la corrección más urgente, afecta al 71.8 % del conjunto de validación.
+2. **Añadir variables clínicas** (hemoglobina, peso, antecedentes obstétricos) para intentar separar
+   `low` de `mid`.
+3. **Ajustar hiperparámetros:** kernel polinomial de grado 2 en `SMO` (el actual es lineal porque el
+   exponente por defecto de Weka es 1), y búsqueda de neuronas y tasa de aprendizaje en
+   `MultilayerPerceptron`.
+4. **Probar métodos de conjunto** (Random Forest, XGBoost) en la misma partición 70/30, que en
+   trabajos previos con este dataset superaron a los clasificadores individuales.
+5. **Usar salida probabilística** en lugar de predicción dura, para fijar un umbral de alarma según
+   la sensibilidad requerida por el protocolo clínico.
+6. **Validar con datos externos** de otra población.
+
 
 ---
 
@@ -801,13 +859,13 @@ es el indicador de **sobreajuste**:
 6. **Naciones Unidas.** *Objetivo de Desarrollo Sostenible 3: Salud y Bienestar*.
    <https://sdgs.un.org/goals/goal3>
    Meta 3.1: reducir la mortalidad materna a menos de 70 muertes por cada 100,000/SCS,
-   marco en el que se justifica la relevancia del problema (secciones 1, 3 y 11).
+   marco en el que se justifica la relevancia del problema (secciones 1, 3 y 10).
 
 7. **Witten, I. H., Frank, E., Hall, M. A., & Pal, C. J. (2016).** *Data Mining: Practical
    Machine Learning Tools and Techniques* (4.ª ed.). Morgan Kaufmann.
    Base teórica de los cuatro algoritmos del marco teórico (secciones 5.2 a 5.5), de los
    conceptos de validación train/test y de las métricas de desempeño, incluido el
-   *Kappa statistic* analizado en la sección 10.
+   *Kappa statistic* analizado en la sección 9.1.
 
 > El particionado de los datos (sección 6.2) se realizó con `scikit-learn`, una biblioteca
 > abierta de uso común en aprendizaje automático; no se cita de forma específica porque
