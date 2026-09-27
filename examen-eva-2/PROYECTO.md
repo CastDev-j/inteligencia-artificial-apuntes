@@ -618,18 +618,7 @@ es el indicador de **sobreajuste**:
   prácticamente perfectas (100 % de aciertos) por la alta repetición de registros descrita en
   6.4, y que su desempeño en prueba se reduzca. Esa brecha debe reportarse explícitamente.
 
-```mermaid
-flowchart TD
-    A["Comparar %a de ENTRENAMIENTO<br/>con %a de VALIDACIÓN"] --> B{"Brecha menor a 5 %"}
-    B -->|Sí| C["Generaliza bien<br/>modelo candidato a la entrega"]
-    B -->|Entre 5 % y 10 %| D["Ajuste moderado<br/>revisar regularización o K"]
-    B -->|Mayor a 10 %| E["Sobreajuste<br/>el modelo memorizó el train"]
-    E --> F["Causas probables:<br/>K muy bajo en IBk,<br/>red neuronal muy grande,<br/>duplicados train/test"]
-    F --> G["Mitigaciones:<br/>aumentar K, reducir neuronas,<br/>eliminar duplicados, validar con CV"]
-    C --> H["Reportar ambas tablas<br/>en las secciones 9.1 y 9.2"]
-    D --> H
-    G --> H
-```
+![[Pasted image 20260926181407.png]]
 
 ### 9.3 Limitaciones del estudio
 
