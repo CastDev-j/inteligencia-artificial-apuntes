@@ -719,58 +719,45 @@ de los 82 casos `high` se clasificaron mal.
 | `SMO` (SVM) | 64.32 % | 62.62 % | 1.69 p.p. | **Subajuste** |
 | `NaiveBayes` | 60.93 % | 59.34 % | 1.59 p.p. | **Subajuste** |
 
-La lectura es contraintuitiva: **la mayor brecha es del mejor modelo**. Una brecha pequeña no
-indica buena generalización, sino que el modelo no aprovecha ninguno de los dos conjuntos: los tres
-con brecha mínima son también los que peor rinden en su propio entrenamiento, lo que apunta a
-falta de capacidad y no a varianza. La causa probable es la falta de ajuste de hiperparámetros:
-el `SMO` con **kernel lineal** y la red con 4 neuronas ocultas no pueden trazar fronteras curvas en
-un espacio de 6 dimensiones. Las diferencias de 1–2 p.p. entre esos tres modelos caen dentro del
-ruido muestral (0.33 p.p. por instancia).
+**La mayor brecha es del mejor modelo.** Una brecha pequeña no es buena generalización: significa
+que el modelo no aprovecha ninguno de los dos conjuntos. Los tres con brecha mínima rinden mal
+incluso en su propio entrenamiento (subajuste), por no haber ajustado hiperparámetros: el `SMO` con
+**kernel lineal** y la red de 4 neuronas no trazan fronteras curvas en 6 dimensiones. Sus
+diferencias de 1–2 p.p. caen dentro del ruido muestral (0.33 p.p. por instancia).
 
 ### 9.4 El problema de la clase `mid`
 
-Es el hallazgo de mayor implicancia clínica, y el riesgo apunta en la dirección peligrosa: degradar
-`mid` a `low` **subdiagnostica de forma silenciosa** al grupo que más se beneficia del seguimiento
-rutinario, porque la paciente no muestra síntomas. Ocurre en 81 de las 101 pacientes `mid` del test
-con `NaiveBayes` (80.2 %), en 68 con `SMO` y en solo 20 con `IBk` (exhaustividad `mid` de la tabla
-en 8.4).
+Es el hallazgo de mayor implicancia clínica: degradar `mid` a `low` **subdiagnostica en silencio** al
+grupo que más necesita seguimiento, porque la paciente no muestra síntomas. Con `NaiveBayes` ocurre
+en 81 de las 101 pacientes `mid` del test (80.2 %); con `SMO` en 68; con `IBk` solo en 20.
 
-La causa está en los datos, no en los modelos. La glucemia media es 7.3 / 7.9 / 12.0 para `low` /
-`mid` / `high` —separación excelente entre `low` y `high`— pero `low` y `mid` se solapan casi por
-completo (7.3 ± 0.7 frente a 7.9 ± 2.4, mismo rango 6–9) y la presión sistólica apenas difiere
-(105 frente a 114). **`low` y `mid` son la misma región del dataset**: por eso 38 de los 53 errores
-de `IBk` caen en esa frontera, y ningún modelo construido solo con estas seis constantes puede
-superarla (ver 9.6, punto 2).
+La causa está en los datos: la glucemia media es 7.3 / 7.9 / 12.0 para `low` / `mid` / `high`, pero
+`low` y `mid` se solapan (7.3 ± 0.7 frente a 7.9 ± 2.4) y la presión sistólica apenas difiere
+(105 frente a 114). Son **la misma región del dataset**: 38 de los 53 errores de `IBk` caen en esa
+frontera, y ninguna combinación de estas seis constantes la superará (9.6, punto 2).
 
 ### 9.5 Limitaciones del estudio
 
-- **Muestra reducida** (1014 registros) y de un solo país: no se generaliza a otras poblaciones sin
-  reentrenamiento.
+- **Muestra** de 1014 registros y de un solo país: no se generaliza sin reentrenamiento.
 - **Solapamiento train/test:** 219 de las 305 instancias de validación (71.8 %) replican un patrón
-  presente en el entrenamiento, así que los accuracies de 8.2 **no estiman el desempeño con
-  pacientes nuevas**.
-- **Etiquetas ambiguas:** 27 grupos con los 6 valores idénticos tienen etiquetas de riesgo distintas
-  (151 instancias). Hay filas indistinguibles, lo que fija un **error de Bayes no nulo**: nadie
-  puede llegar al 100 % de accuracy en este conjunto.
-- **Clases solapadas:** el desempeño mediocre en `low` y `mid` es un resultado esperable y
-  científicamente honesto, no un error del experimento.
-- **Sin validación clínica:** las etiquetas provienen del criterio clínico de las mediciones
-  registradas, no de un estudio prospectivo.
-- **Configuración no optimizada:** el kernel lineal del `SMO` y la red de 4 neuronas hacen que esas
-  dos cifras **no representen su rendimiento real**.
+  del entrenamiento, así que 8.2 **no estima el desempeño con pacientes nuevas**.
+- **Etiquetas ambiguas:** 27 grupos con los 6 valores idénticos y etiquetas distintas (151
+  instancias) fijan un **error de Bayes no nulo**.
+- **Sin validación clínica:** las etiquetas vienen del criterio de las mediciones, no de un estudio
+  prospectivo.
+- **Configuración no optimizada:** las cifras de `SMO` y `MultilayerPerceptron` no representan su
+  rendimiento real.
 
 ### 9.6 Trabajo futuro
 
-1. **Eliminar el solapamiento**, agrupando las filas de valores idénticos en un mismo subconjunto:
-   afecta al 71.8 % del conjunto de validación.
+1. **Eliminar el solapamiento** agrupando las filas de valores idénticos en un mismo subconjunto
+   (afecta al 71.8 % del test).
 2. **Añadir variables clínicas** (hemoglobina, peso, antecedentes obstétricos) para separar `low`
    de `mid`.
-3. **Ajustar hiperparámetros:** kernel polinomial de grado 2 en `SMO` (Weka usa exponente 1 por
-   defecto, es decir lineal) y búsqueda de neuronas y tasa de aprendizaje en
-   `MultilayerPerceptron`.
-4. **Probar métodos de conjunto** (Random Forest, XGBoost) en la misma partición 70/30.
-5. **Usar salida probabilística** en lugar de predicción dura, para fijar un umbral de alarma
-   según la sensibilidad requerida por el protocolo clínico.
+3. **Ajustar hiperparámetros:** kernel de grado 2 en `SMO` (Weka usa exponente 1, es decir lineal)
+   y más neuronas en `MultilayerPerceptron`.
+4. **Probar métodos de conjunto** (Random Forest, XGBoost) en la misma partición.
+5. **Salida probabilística** para fijar el umbral de alarma según el protocolo clínico.
 6. **Validar con datos externos** de otra población.
 
 
